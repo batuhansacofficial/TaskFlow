@@ -1,6 +1,6 @@
 # TaskFlow - Proje Tanıtımı
 
-Durum: Yerel API ve gerçek Postman CRUD kanıtları tamamlanmıştır; public GitHub teslimi beklemektedir.
+Durum: API, gerçek Postman CRUD evidence ve [public GitHub teslimi](https://github.com/batuhansacofficial/TaskFlow) tamamlanmıştır.
 
 ## Amaç
 
@@ -30,6 +30,6 @@ Görevler varsayılan olarak `data/tasks.json` içinde tutulur. Veri dosyası bu
 
 ## Hedeflenen teslim
 
-Source code, `package.json`/lockfile, bu tanıtım, çalıştırma README'si, tasarım ve kullanım belgeleri, automated test'ler ve Postman collection repository içinde bulunur. Beş temel CRUD işlemi ve silme sonrası bulunamama kontrolünün [gerçek Postman ekran görüntüleri](test-kanitlari/README.md) eklenmiştir. Nihai teslimin yapılacağı tek public GitHub repository henüz oluşturulmamıştır.
+Source code, `package.json`/lockfile, bu tanıtım, çalıştırma README'si, tasarım ve kullanım belgeleri, automated test'ler ve Postman collection [public TaskFlow repository](https://github.com/batuhansacofficial/TaskFlow) içinde bulunur. Beş temel CRUD işlemi ve silme sonrası bulunamama kontrolünün [gerçek Postman ekran görüntüleri](test-kanitlari/README.md) de `main` branch'ine push edilmiştir.
 
 Kaynak: Backend Geliştirme Proje Yönergesi.1.pdf, s.2-7 ve s.12-15. Yönergenin belirlemediği veri modeli, HTTP contract ve saklama kararları [analizde](proje-analizi.md) ayrıca ayrılır. Automated test kapsamı ve Postman kanıtlarının tekrarlanması [test planında](test-plani.md) açıklanır.

@@ -50,4 +50,4 @@ Silme sonrası kontrol görüntüsü `404` durumunu ve Headers sekmesini göster
 
 ## Teslim durumu
 
-Uygulama, automated checks, collection, kullanım belgeleri ve gerçek Postman CRUD ekran görüntüleri yereldedir. Public GitHub teslimi henüz tamamlanmamıştır.
+Uygulama, automated checks, Postman collection, documentation ve gerçek CRUD ekran görüntüleri [public TaskFlow repository](https://github.com/batuhansacofficial/TaskFlow) içinde `main` branch'ine push edilmiştir. Altı PNG ve yedi request içeren logger snapshot aynı repository'de bulunur. Runtime data, `.env` ve `node_modules/` publication kapsamına alınmamıştır.

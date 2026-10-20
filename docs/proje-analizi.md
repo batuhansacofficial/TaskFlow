@@ -10,7 +10,7 @@ Kaynak SHA-256: `d8fd5e9c5f9128cae5c6666f54c00562a41fe0042152f34566ad39a8fc54026
 
 Bu belgede **yönerge gereksinimi**, PDF'nin açıkça istediği sonucu; **tasarım kararı**, yönergede belirlenmemiş bir konu için seçilen çözümü ifade eder. İlk analizde önerilen teknik kararlar uygulanmıştır; kaynak gereksinimlerle karıştırılmaması için ayrım korunmuştur.
 
-Yerel API; zorunlu CRUD, routing ve logger ile isteğe bağlı validation, filtering, search, çalışan listeleri, pagination, sorting ve raporlamayı içerir. Automated HTTP/repository test'leri ve Postman collection vardır. Gerçek Postman web arayüzünde temel CRUD akışı doğrulanmış, altı ekran görüntüsü eklenmiştir. Public GitHub teslimi açık durumdadır.
+API; zorunlu CRUD, routing ve logger ile isteğe bağlı validation, filtering, search, çalışan listeleri, pagination, sorting ve raporlamayı içerir. Automated HTTP/repository test'leri ve Postman collection vardır. Gerçek Postman web arayüzünde temel CRUD akışı doğrulanmış, altı ekran görüntüsü eklenmiştir. Source code, documentation ve evidence dosyaları [public GitHub repository](https://github.com/batuhansacofficial/TaskFlow) içinde `main` branch'ine push edilmiştir.
 
 ## Amaç ve kapsam
 
@@ -33,13 +33,13 @@ Belgenin başlığında proje yönetimi geçmesine rağmen ayrı `Project` veya 
 | Z09 | Logger middleware | s.6 | HTTP method, endpoint ve UTC timestamp konsola yazılır; hata request'leri de test edilir |
 | Z10 | Gerçek Postman testleri | s.7, 12 | Temel CRUD ve silme sonrası kontrolün [altı gerçek ekran görüntüsü](test-kanitlari/README.md) eklendi |
 | Z11 | Temel teslim belgeleri ve source code | s.7, 12 | Tanıtım, README, kaynaklar, `package.json` ve gerçek test görüntüleri hazır |
-| Z12 | Tek public GitHub repository | s.14 | **Açık:** yerel Git repository var; public remote repository henüz oluşturulmadı |
+| Z12 | Tek public GitHub repository | s.14 | **Tamamlandı:** source code, documentation ve Postman evidence [TaskFlow](https://github.com/batuhansacofficial/TaskFlow) repository'sine push edildi |
 
 S.5'teki veri modeli ve API tasarım çıktıları, s.11'de isteğe bağlı sunulan kapsamlı dokümantasyonla aynı şey değildir. Temel tasarım belgelerine ek olarak ayrıntılı endpoint örnekleri, test planı ve kullanım kılavuzu hazırlanmıştır.
 
 ## İsteğe bağlı kapsamın değerlendirilmesi
 
-Yönerge bu başlıkların teslim ve değerlendirmeye dahil olmadığını açıkça belirtir (s.4, 8-11, 15). Zorunlu API davranışlarının ardından aşağıdaki genişletmeler uygulanmıştır. Gerçek Postman CRUD kanıtları tamamlanmıştır; public repository teslimi açık kalır.
+Yönerge bu başlıkların teslim ve değerlendirmeye dahil olmadığını açıkça belirtir (s.4, 8-11, 15). Zorunlu API davranışlarının ardından aşağıdaki genişletmeler uygulanmıştır. Gerçek Postman CRUD evidence ve public repository teslimi tamamlanmıştır.
 
 | Sıra | Başlık | Kaynak | Uygulanan karşılık | Doğrulama odağı |
 | --- | --- | --- | --- | --- |
@@ -101,14 +101,14 @@ JSON dosyası normal yeniden başlatmalarda veriyi korur. Aynı dosyanın işlem
 
 Bu, yönergenin zorunlu tuttuğu bir database mimarisi değildir; küçük eğitim projesinin ilk sürümü için seçilen saklama yaklaşımıdır.
 
-## Uygulama ve kalan doğrulama
+## Uygulama ve verification durumu
 
 1. Veri modeli, HTTP contract, Node.js/Express altyapısı ve logger uygulandı.
 2. Beş CRUD işlemi, atama/durum/öncelik yönetimi ve JSON persistence, automated test'lerle doğrulanıyor.
 3. Uygun isteğe bağlı özellikler uygulandı; temel akışlar ve genişletmeler aynı test paketinde yer alıyor.
 4. README, ayrıntılı API/test/kullanım belgeleri ve Postman collection hazırlandı.
 5. Postman web arayüzü ve Desktop Agent ile health check, temel CRUD ve silme sonrası kontrol doğrulandı; altı ekran görüntüsü eklendi.
-6. **Kalan:** Son teslim kontrolünden sonra tek public GitHub repository'sinde yayımlama.
+6. Source code, documentation ve Postman evidence tek public GitHub repository'sine push edildi.
 
 Yönergedeki "5 günlük eğitim kapsamı" bir kapsam tanımıdır; burada takvim veya teslim tarihi varsayılmamıştır.
 
@@ -148,4 +148,4 @@ Kaynak: s.13. İsteğe bağlı işlerin ayrıca puan kazandırdığına dair bil
 - [x] Gerçek Postman ekran görüntüleri eklendi.
 - [x] README kurulum ve çalıştırma adımları eklendi.
 - [x] İsteğe bağlı geliştirmelerin son kapsamı ve testleri kaydedildi.
-- [ ] Kaynak ve teslim belgeleri tek public GitHub repository'sinde yayımlandı.
+- [x] Source code ve teslim belgeleri tek public GitHub repository'sinde yayımlandı.

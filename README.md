@@ -6,7 +6,7 @@ Node.js ve Express.js ile görev oluşturma, çalışan atama, durum ve öncelik
 
 Görev CRUD işlemleri, routing ve her request'in HTTP method, endpoint ve timestamp alanlarını kaydeden logger uygulanmıştır. İsteğe bağlı field validation, durum/öncelik filter'ları, Türkçe harf dönüşümünü gözeten search, çalışana göre listeleme, pagination, sorting ve durum raporları da bulunur.
 
-Temel CRUD akışı gerçek Postman web arayüzünde doğrulanmış ve [altı ekran görüntüsü](docs/test-kanitlari/README.md) eklenmiştir. Public GitHub repository henüz oluşturulmamıştır; kalan teslim maddesi budur.
+Temel CRUD akışı gerçek Postman web arayüzünde doğrulanmış ve [altı ekran görüntüsü](docs/test-kanitlari/README.md) eklenmiştir. Source code, documentation, Postman collection ve evidence dosyaları [public GitHub repository](https://github.com/batuhansacofficial/TaskFlow) içinde `main` branch'inde bulunur.
 
 ## Gereksinimler ve kurulum
 
@@ -14,7 +14,14 @@ Temel CRUD akışı gerçek Postman web arayüzünde doğrulanmış ve [altı ek
 - npm; doğrulanan sürüm: **12.2.0**.
 - Application dependency: **Express 5.3.0**. Sürümler `package-lock.json` ile sabitlenir.
 
-Kaynakları GitHub'dan indirirken repository sayfasında **Code → Download ZIP** seçin, arşivi çıkarın ve terminali çıkarılan projenin `package.json` içeren klasöründe açın. Yerel çalışma kopyası zaten mevcutsa terminali doğrudan bu proje klasöründe açın. Public repository adresi henüz yayımlanmamıştır.
+Repository'yi clone edin ve proje klasörüne geçin:
+
+```sh
+git clone https://github.com/batuhansacofficial/TaskFlow.git
+cd TaskFlow
+```
+
+Alternatif olarak [repository sayfasında](https://github.com/batuhansacofficial/TaskFlow) **Code → Download ZIP** seçin ve arşivi çıkarın. Terminali `package.json` içeren klasörde açın. Yerel working copy zaten mevcutsa doğrudan bu proje klasörünü kullanın.
 
 Proje klasöründe dependency'leri kurun:
 

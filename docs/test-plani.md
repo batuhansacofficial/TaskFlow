@@ -85,4 +85,4 @@ Dosyalar `docs/test-kanitlari/` altındadır. Görüntüler yalnız request/resp
 - Tarayıcı CORS hatasında `CORS_ORIGIN` tam eşleşmesini ve yeniden başlatmayı kontrol edin.
 - `400` response'unda `error.code` ve varsa `error.details` alanlarını inceleyin; testin kasıtlı hata örneği olup olmadığını kontrol edin.
 - Bozuk veri dosyası nedeniyle `500` veya başlangıç hatası varsa server'ı durdurun, dosyayı koruyun ve geçerli bir yedekten geri yükleyin. Mevcut dosyayı boş diziyle değiştirmek tanı veya onarım adımı değildir.
-- Kalan public GitHub teslimi tamamlandığında [analizin teslim listesini](proje-analizi.md) ve [sonuç belgesini](test-sonuclari.md) gerçek duruma göre güncelleyin.
+- Yeni test veya evidence eklendiğinde [analizin teslim listesini](proje-analizi.md) ve [sonuç belgesini](test-sonuclari.md) gerçek duruma göre güncelleyin.
