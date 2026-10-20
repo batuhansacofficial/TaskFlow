@@ -1,6 +1,6 @@
 # TaskFlow - Test Planı
 
-Bu plan otomatik denetimleri, gerçek Postman akışını ve teslim kanıtlarını ayrı olarak tanımlar. Son çalıştırma sonuçları [doğrulama sonuçlarında](test-sonuclari.md) tutulur. Gerçek Postman ekran görüntüleri henüz eklenmemiştir; Postman web oturumu beklenmektedir.
+Bu plan otomatik denetimleri, gerçek Postman akışını ve teslim kanıtlarını ayrı olarak tanımlar. Son çalıştırma sonuçları [doğrulama sonuçlarında](test-sonuclari.md) tutulur. Gerçek Postman web arayüzünde sağlık ve temel CRUD akışı doğrulanmış, [altı ekran görüntüsü](test-kanitlari/README.md) eklenmiştir. Koleksiyonun 37 isteğinin otomatik HTTP denetimi, manuel Postman akışından ayrı bir kontroldür.
 
 ## Otomatik kontroller
 
@@ -36,7 +36,7 @@ Beklenen davranışlar:
 
 API'yi `npm start` ile çalıştırın. Varsayılan temel adres `http://127.0.0.1:3000` değeridir. Ayrı deneme verisi istenirse `.env` içinde `DATA_FILE=./data/postman-tasks.json` seçin; yapılandırma değişince sunucuyu yeniden başlatın. `data/` altındaki çalışma JSON dosyaları sürüm kontrolünün dışındadır.
 
-Postman web kullanırken oturum açın. Yerel API için Browser Agent veya Desktop Agent kullanılır; Cloud Agent yerel kaynaklara erişemez. Browser Agent seçeneğinde `.env` içine `CORS_ORIGIN=https://web.postman.co` ekleyip sunucuyu yeniden başlatın. Origin tam eşleşmelidir. Tarayıcı yerel ağ izni isterse API'ye erişim için bu izni verin. Agent seçeneklerinin davranışı [Postman belgesinde](https://learning.postman.com/docs/getting-started/basics/about-postman-agent) açıklanır.
+Postman web kullanırken oturum açın. Yerel API için Browser Agent veya Desktop Agent kullanılır; Cloud Agent yerel kaynaklara erişemez. Kaydedilen manuel akış Desktop Agent `0.5.2` üzerinden yapılmıştır. Browser Agent seçeneğinde `.env` içine `CORS_ORIGIN=https://web.postman.co` ekleyip sunucuyu yeniden başlatın. Origin tam eşleşmelidir. Tarayıcı yerel ağ izni isterse API'ye erişim için bu izni verin. Agent seçeneklerinin davranışı [Postman belgesinde](https://learning.postman.com/docs/getting-started/basics/about-postman-agent) açıklanır.
 
 ## Koleksiyon ve ortamı içe aktarma
 
@@ -66,18 +66,18 @@ Hata örneklerinde beklenen durum kodunun gelmesi başarılı testtir. Son dört
 
 ## Gerçek ekran görüntüleri
 
-Collection Runner sonucu tek başına beş temel CRUD ekran görüntüsünün yerine geçmez. `01 - Zorunlu CRUD` klasörünü istek istek göndererek her yanıtı kaydedin. Görüntüde metot, tam URL, durum kodu ve ilgili istek/yanıt gövdesi okunabilir olmalıdır.
+Temel CRUD akışı manuel olarak çalıştırılmış ve aşağıdaki görüntüler eklenmiştir. Akışı tekrarlamak için `01 - Zorunlu CRUD` klasörünü istek istek gönderin. Collection Runner sonucu tek başına bu görüntülerin yerine geçmez. Görüntüde metot, tam URL, durum kodu ve ilgili istek/yanıt alanları okunabilir olmalıdır.
 
-| Sıra | Gözlem | Hedef dosya adı |
+| Sıra | Gözlem | Kaydedilen görüntü |
 | --- | --- | --- |
-| 1 | `POST /tasks`: gönderilen alanlar, dönen UUID ve `201` | `01-gorev-ekleme.png` |
-| 2 | `GET /tasks`: aynı UUID'nin listede olması ve `200` | `02-gorev-listeleme.png` |
-| 3 | `GET /tasks/:id`: aynı kayıt ve `200` | `03-gorev-detayi.png` |
-| 4 | `PATCH /tasks/:id`: atama/durum/öncelik değişiklikleri ve `200` | `04-gorev-guncelleme.png` |
-| 5 | `DELETE /tasks/:id`: `204` ve boş gövde | `05-gorev-silme.png` |
-| 6 | Silinen kayda `GET`: `404 TASK_NOT_FOUND` | `06-silinen-gorev-kontrolu.png` |
+| 1 | `POST /tasks`: gönderilen alanlar, dönen UUID ve `201` | [01-gorev-ekleme.png](test-kanitlari/01-gorev-ekleme.png) |
+| 2 | `GET /tasks`: aynı UUID'nin listede olması ve `200` | [02-gorev-listeleme.png](test-kanitlari/02-gorev-listeleme.png) |
+| 3 | `GET /tasks/:id`: aynı kayıt ve `200` | [03-gorev-detayi.png](test-kanitlari/03-gorev-detayi.png) |
+| 4 | `PATCH /tasks/:id`: atama/durum/öncelik değişiklikleri ve `200` | [04-gorev-guncelleme.png](test-kanitlari/04-gorev-guncelleme.png) |
+| 5 | `DELETE /tasks/:id`: `204` ve boş gövde | [05-gorev-silme.png](test-kanitlari/05-gorev-silme.png) |
+| 6 | Silinen kayda `GET`: `404`, Headers sekmesi | [06-silinen-gorev-kontrolu.png](test-kanitlari/06-silinen-gorev-kontrolu.png) |
 
-Dosyalar `docs/test-kanitlari/` altına kaydedilecektir; bu tabloda verilenler hedef adlardır, mevcut görüntü bağlantıları değildir. Hesap menüsü, e-posta ve oturum bilgilerini kadraja almayın. Kanıt düzeni [ilgili dizinin açıklamasında](test-kanitlari/README.md) bulunur. Logger için ayrıca sunucu konsolunda aynı isteklerin `method`, `endpoint`, `timestamp` alanlarını kontrol edin.
+Dosyalar `docs/test-kanitlari/` altındadır. Görüntüler yalnız istek/yanıt alanlarına kadrajlanmış, içerikleri değiştirilmemiştir. Altıncı görüntüde JSON hata kodu görünmez; `404` durumu ve yanıt başlıkları görünür. Hata zarfı otomatik testlerde ayrıca denetlenir. Yeni görüntülerde hesap menüsü, e-posta ve oturum bilgilerini kadraja almayın. Kanıt düzeni [ilgili dizinin açıklamasında](test-kanitlari/README.md) bulunur. Logger için ayrıca sunucu konsolunda aynı isteklerin `method`, `endpoint`, `timestamp` alanlarını kontrol edin.
 
 ## Hata durumunda
 
@@ -85,4 +85,4 @@ Dosyalar `docs/test-kanitlari/` altına kaydedilecektir; bu tabloda verilenler h
 - Tarayıcı CORS hatasında `CORS_ORIGIN` tam eşleşmesini ve yeniden başlatmayı kontrol edin.
 - `400` yanıtında `error.code` ve varsa `error.details` alanlarını inceleyin; testin kasıtlı hata örneği olup olmadığını kontrol edin.
 - Bozuk veri dosyası nedeniyle `500` veya başlangıç hatası varsa sunucuyu durdurun, dosyayı koruyun ve geçerli bir yedekten geri yükleyin. Mevcut dosyayı boş diziyle değiştirmek tanı veya onarım adımı değildir.
-- Public GitHub teslimi ve gerçek Postman görüntüleri tamamlandığında [analizin teslim listesini](proje-analizi.md) ve [sonuç belgesini](test-sonuclari.md) gerçek duruma göre güncelleyin.
+- Kalan public GitHub teslimi tamamlandığında [analizin teslim listesini](proje-analizi.md) ve [sonuç belgesini](test-sonuclari.md) gerçek duruma göre güncelleyin.

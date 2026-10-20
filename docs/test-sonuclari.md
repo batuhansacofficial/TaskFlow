@@ -26,8 +26,28 @@ Test kapsamı: temel CRUD, logger alanları, atama/durum/öncelik değişiklikle
 
 Koleksiyondaki 37 istek, gerçek geçici HTTP sunucusuna sırayla gönderildi. İsteklerin `pm.test` betikleri de çalıştırıldı: 110 assertion başarılı, 0 hata. Koleksiyon ve environment dosyaları geçerli JSON olarak ayrıştırıldı.
 
-Bu kontrol, Postman uygulamasında testlerin çalıştırıldığı veya ekran görüntülerinin tamamlandığı anlamına gelmez. Teslim için gereken beş CRUD ekran görüntüsü henüz eklenmemiştir. Web oturumu ve Browser Agent üzerinden gerçek Postman kontrolü tamamlandığında kanıtlar ayrıca kaydedilmelidir.
+Bu otomatik HTTP kontrolü, koleksiyonun 37 isteğinin Postman Collection Runner içinde çalıştırıldığı anlamına gelmez. Postman arayüzündeki manuel doğrulamanın kapsamı aşağıdadır.
+
+## Gerçek Postman doğrulaması
+
+Postman web arayüzünden, yerel `http://127.0.0.1:3000` sunucusuna Desktop Agent `0.5.2` üzerinden yedi istek manuel gönderildi:
+
+| İstek | Gözlenen HTTP durumu |
+| --- | --- |
+| `GET /health` | `200` |
+| `POST /tasks` | `201` |
+| `GET /tasks` | `200` |
+| `GET /tasks/:id` | `200` |
+| `PATCH /tasks/:id` | `200` |
+| `DELETE /tasks/:id` | `204` |
+| Silinen kayda `GET /tasks/:id` | `404` |
+
+Akışta oluşturulan görev kimliği `ab4cfc37-6b5d-4fd4-863d-deb78aea3ccf` değeridir; akış sonunda görev silinmiştir. Beş CRUD işlemi ve silme sonrası kontrolün [altı ekran görüntüsü](test-kanitlari/README.md) eklenmiştir. Görüntüler gerçek istek/yanıt alanlarına kadrajlanmıştır; içerikleri değiştirilmemiştir.
+
+Aynı yedi isteğin sunucu standart çıktı kayıtları [07-istek-kayitlari.jsonl](test-kanitlari/07-istek-kayitlari.jsonl) dosyasındadır. Metot, endpoint ve zaman damgaları manuel Postman akışıyla eşleştirilmiştir. Akış sonunda çalışma görev dosyası boş dizidir; test için oluşturulan görev kaldırılmıştır.
+
+Silme sonrası kontrol görüntüsü `404` durumunu ve Headers sekmesini gösterir; JSON hata kodu bu görüntüde görünmez. `TASK_NOT_FOUND` hata zarfı otomatik HTTP testlerinde ayrıca doğrulanmıştır. Sağlık kontrolü manuel akışta yapılmış; ayrı bir sağlık ekran görüntüsü eklenmemiştir.
 
 ## Teslim durumu
 
-Uygulama, otomatik kontroller, koleksiyon ve kullanım belgeleri yereldedir. Gerçek Postman ekran görüntüleri ve public GitHub teslimi tamamlanmamıştır.
+Uygulama, otomatik kontroller, koleksiyon, kullanım belgeleri ve gerçek Postman CRUD ekran görüntüleri yereldedir. Public GitHub teslimi henüz tamamlanmamıştır.

@@ -10,7 +10,7 @@ Kaynak SHA-256: `d8fd5e9c5f9128cae5c6666f54c00562a41fe0042152f34566ad39a8fc54026
 
 Bu belgede **yönerge gereksinimi**, PDF'nin açıkça istediği sonucu; **tasarım kararı**, yönergede belirlenmemiş bir konu için seçilen çözümü ifade eder. İlk analizde önerilen teknik kararlar uygulanmıştır; kaynak gereksinimlerle karıştırılmaması için ayrım korunmuştur.
 
-Yerel API; zorunlu CRUD, routing ve logger ile isteğe bağlı doğrulama, filtreleme, arama, çalışan listeleri, sayfalama, sıralama ve raporlamayı içerir. Otomatik HTTP/repository testleri ve Postman koleksiyonu vardır. Gerçek Postman ekran görüntüleri, Postman web oturumu beklediği için henüz eklenmemiştir. Public GitHub teslimi de açık durumdadır.
+Yerel API; zorunlu CRUD, routing ve logger ile isteğe bağlı doğrulama, filtreleme, arama, çalışan listeleri, sayfalama, sıralama ve raporlamayı içerir. Otomatik HTTP/repository testleri ve Postman koleksiyonu vardır. Gerçek Postman web arayüzünde temel CRUD akışı doğrulanmış, altı ekran görüntüsü eklenmiştir. Public GitHub teslimi açık durumdadır.
 
 ## Amaç ve kapsam
 
@@ -31,15 +31,15 @@ Belgenin başlığında proje yönetimi geçmesine rağmen ayrı `Project` veya 
 | Z07 | Görev güncelleme | s.3, 6 | `PATCH /tasks/:id` bilgileri, atamayı, durumu ve önceliği değiştirir; otomatik HTTP testi var |
 | Z08 | Görev silme | s.6 | `DELETE /tasks/:id` sonrasında kayıt bulunamaz; otomatik HTTP testi var |
 | Z09 | Logger middleware | s.6 | Metot, endpoint ve UTC zaman damgası konsola yazılır; hata istekleri de test edilir |
-| Z10 | Gerçek Postman testleri | s.7, 12 | **Açık:** koleksiyon hazır; beş işlemin gerçek ekran görüntüleri henüz yok |
-| Z11 | Temel teslim belgeleri ve kaynak kod | s.7, 12 | Tanıtım, README, kaynaklar ve `package.json` hazır; test görüntüleri bekliyor |
+| Z10 | Gerçek Postman testleri | s.7, 12 | Temel CRUD ve silme sonrası kontrolün [altı gerçek ekran görüntüsü](test-kanitlari/README.md) eklendi |
+| Z11 | Temel teslim belgeleri ve kaynak kod | s.7, 12 | Tanıtım, README, kaynaklar, `package.json` ve gerçek test görüntüleri hazır |
 | Z12 | Tek public GitHub deposu | s.14 | **Açık:** yerel Git deposu var; public uzak depo henüz oluşturulmadı |
 
 S.5'teki veri modeli ve API tasarım çıktıları, s.11'de isteğe bağlı sunulan kapsamlı dokümantasyonla aynı şey değildir. Temel tasarım belgelerine ek olarak ayrıntılı endpoint örnekleri, test planı ve kullanım kılavuzu hazırlanmıştır.
 
 ## İsteğe bağlı kapsamın değerlendirilmesi
 
-Yönerge bu başlıkların teslim ve değerlendirmeye dahil olmadığını açıkça belirtir (s.4, 8-11, 15). Zorunlu API davranışlarının ardından aşağıdaki genişletmeler uygulanmıştır. Postman ekran görüntüsü ve public depo gereksinimleri, bu genişletmelerin tamamlanmış olmasına rağmen açık kalır.
+Yönerge bu başlıkların teslim ve değerlendirmeye dahil olmadığını açıkça belirtir (s.4, 8-11, 15). Zorunlu API davranışlarının ardından aşağıdaki genişletmeler uygulanmıştır. Gerçek Postman CRUD kanıtları tamamlanmıştır; public depo teslimi açık kalır.
 
 | Sıra | Başlık | Kaynak | Uygulanan karşılık | Doğrulama odağı |
 | --- | --- | --- | --- | --- |
@@ -107,22 +107,23 @@ Bu, yönergenin zorunlu tuttuğu bir veritabanı mimarisi değildir; küçük e�
 2. Beş CRUD işlemi, atama/durum/öncelik yönetimi ve JSON kalıcılığı otomatik testlerle doğrulanıyor.
 3. Uygun isteğe bağlı özellikler uygulandı; temel akışlar ve genişletmeler aynı test paketinde yer alıyor.
 4. README, ayrıntılı API/test/kullanım belgeleri ve Postman koleksiyonu hazırlandı.
-5. **Kalan:** Postman web oturumu açıldıktan sonra gerçek CRUD isteklerini çalıştırıp ekran görüntülerini ekleme.
+5. Postman web arayüzü ve Desktop Agent ile sağlık, temel CRUD ve silme sonrası kontrol doğrulandı; altı ekran görüntüsü eklendi.
 6. **Kalan:** Son teslim kontrolünden sonra tek public GitHub deposunda yayımlama.
 
 Yönergedeki "5 günlük eğitim kapsamı" bir kapsam tanımıdır; burada takvim veya teslim tarihi varsayılmamıştır.
 
-## Bekleyen Postman test kanıtları
+## Gerçek Postman test kanıtları
 
-| İşlem | Beklenen gözlem | Planlanan ekran görüntüsü |
+| İşlem | Gözlenen yanıt | Ekran görüntüsü |
 | --- | --- | --- |
-| Ekleme | Yeni kimlik ve gönderilen görev alanları | `docs/test-kanitlari/01-gorev-ekleme.png` |
-| Listeleme | Oluşturulan görevin listede bulunması | `docs/test-kanitlari/02-gorev-listeleme.png` |
-| Detay | Aynı kimlikteki görevin dönmesi | `docs/test-kanitlari/03-gorev-detayi.png` |
-| Güncelleme | Değiştirilen alanların okunabilmesi | `docs/test-kanitlari/04-gorev-guncelleme.png` |
-| Silme | Silme yanıtı ve sonrasında kaydın bulunamaması | `docs/test-kanitlari/05-gorev-silme.png`; gerekirse ek doğrulama görüntüsü |
+| Ekleme | `201`, üretilen kimlik ve gönderilen alanlar | [01-gorev-ekleme.png](test-kanitlari/01-gorev-ekleme.png) |
+| Listeleme | `200`, aynı görevin listede bulunması | [02-gorev-listeleme.png](test-kanitlari/02-gorev-listeleme.png) |
+| Detay | `200`, aynı kimlikteki görev | [03-gorev-detayi.png](test-kanitlari/03-gorev-detayi.png) |
+| Güncelleme | `200`, değiştirilen atama/durum/öncelik | [04-gorev-guncelleme.png](test-kanitlari/04-gorev-guncelleme.png) |
+| Silme | `204`, boş gövde | [05-gorev-silme.png](test-kanitlari/05-gorev-silme.png) |
+| Silme sonrası kontrol | `404`, Headers sekmesi | [06-silinen-gorev-kontrolu.png](test-kanitlari/06-silinen-gorev-kontrolu.png) |
 
-Tablodaki dosya adları hedef adlardır; görüntüler henüz oluşturulmamıştır. Postman koleksiyonu ve otomatik testler, yönergedeki gerçek ekran görüntülerinin yerine geçmez. Kayıt adımları [test planındadır](test-plani.md).
+Görüntüler gerçek Postman arayüzünden alınmış ve istek/yanıt alanına kadrajlanmıştır; içerikleri değiştirilmemiştir. Silme sonrası görüntü `404` durumunu gösterir; JSON hata kodu bu görüntüde görünmez. Hata zarfı otomatik HTTP testlerinde ayrıca doğrulanır. Sağlık kontrolüyle birlikte yedi isteğin [logger çıktısı](test-kanitlari/07-istek-kayitlari.jsonl) da kaydedilmiştir. Kayıtların kapsamı [doğrulama sonuçlarında](test-sonuclari.md), tekrarlama adımları [test planındadır](test-plani.md).
 
 Otomatik kontroller bulunamayan görev, bozuk JSON, logger alanları, kalıcılık, eşzamanlı işlemler, bozuk dosyanın korunması ve hatadan sonra kurtarmayı içerir. Genişletme testlerinde geçersiz alanlar, birleşik filtreler, Türkçe arama, boş sonuç, sayfa sınırları, kararlı sıralama ve rapor toplamları sınanır. Çalıştırma komutları ve kapsam [test planındadır](test-plani.md).
 
@@ -144,7 +145,7 @@ Kaynak: s.13. İsteğe bağlı işlerin ayrıca puan kazandırdığına dair bil
 - [x] Proje tanıtımı, veri modeli ve API sözleşmesi hazırlandı.
 - [x] Çalışan backend ve `package.json` oluşturuldu.
 - [x] Beş CRUD işlemi ve logger yerel HTTP testlerinde doğrulandı.
-- [ ] Gerçek Postman ekran görüntüleri eklendi.
+- [x] Gerçek Postman ekran görüntüleri eklendi.
 - [x] README kurulum ve çalıştırma adımları eklendi.
 - [x] İsteğe bağlı geliştirmelerin son kapsamı ve testleri kaydedildi.
 - [ ] Kaynak ve teslim belgeleri tek public GitHub deposunda yayımlandı.

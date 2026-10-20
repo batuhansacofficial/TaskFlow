@@ -110,4 +110,4 @@ Bekleyen sayısına `in_progress` dahil edilmemesi proje kararıdır; yönerge b
 
 `GET /health`, `200` ve `{"data":{"status":"ok"}}` döndürür. Bu yanıt yalnız hizmet durumunu bildirir; her çağrıda veri dosyası denetlemez. İsteğe bağlı `CORS_ORIGIN` tek ve tam origin eşleşmesiyle tarayıcı erişimi sağlar; yapılandırma [README'de](../README.md) açıklanır.
 
-Postman koleksiyonu ve [test planı](test-plani.md) doğrulama adımlarını içerir. Gerçek Postman ekran görüntüleri henüz eklenmemiştir; bu belgeler onların yerine geçmez.
+Postman koleksiyonu ve [test planı](test-plani.md) doğrulama adımlarını içerir. Temel CRUD ve silme sonrası kontrolün [gerçek Postman ekran görüntüleri](test-kanitlari/README.md) eklenmiştir; otomatik kontrollerin ve manuel Postman akışının kapsamı [sonuçlarda](test-sonuclari.md) ayrı açıklanır.

@@ -6,13 +6,15 @@ Node.js ve Express.js ile görev oluşturma, çalışan atama, durum ve öncelik
 
 Görev CRUD işlemleri, routing ve her isteğin metot/endpoint/zaman damgasını kaydeden logger uygulanmıştır. İsteğe bağlı alan doğrulama, durum/öncelik filtreleri, Türkçe harf dönüşümünü gözeten arama, çalışana göre listeleme, sayfalama, sıralama ve durum raporları da bulunur.
 
-Gerçek Postman ekran görüntüleri henüz eklenmemiştir; Postman web oturumunun açılması beklenmektedir. Public GitHub deposu henüz oluşturulmamıştır. Bu iki teslim maddesi açık durumdadır.
+Temel CRUD akışı gerçek Postman web arayüzünde doğrulanmış ve [altı ekran görüntüsü](docs/test-kanitlari/README.md) eklenmiştir. Public GitHub deposu henüz oluşturulmamıştır; kalan teslim maddesi budur.
 
 ## Gereksinimler ve kurulum
 
 - Node.js **24.x**; doğrulanan sürüm: **24.21.0**.
 - npm; doğrulanan sürüm: **12.2.0**.
 - Uygulama bağımlılığı: **Express 5.3.0**. Sürümler `package-lock.json` ile sabitlenir.
+
+Kaynakları GitHub'dan indirirken depo sayfasında **Code → Download ZIP** seçin, arşivi çıkarın ve terminali çıkarılan projenin `package.json` içeren klasöründe açın. Yerel çalışma kopyası zaten mevcutsa terminali doğrudan bu proje klasöründe açın. Public depo adresi henüz yayımlanmamıştır.
 
 Proje klasöründe bağımlılıkları kurun:
 
