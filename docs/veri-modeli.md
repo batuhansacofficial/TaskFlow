@@ -1,6 +1,6 @@
-# TaskFlow - Veri Modeli Taslağı
+# TaskFlow - Veri Modeli
 
-Bu şema bir tasarım önerisidir. Yönerge tam bir görev şeması, alan zorunlulukları veya veritabanı seçimi tanımlamaz. Görev atama, durum ve öncelik ihtiyacı s.3'te; bazı alan adları s.8-9'daki isteğe bağlı örneklerde yer alır.
+Bu şema uygulanan tasarım kararıdır. Yönerge tam bir görev şeması, alan zorunlulukları veya veritabanı seçimi tanımlamaz. Görev atama, durum ve öncelik ihtiyacı s.3'te; bazı alan adları s.8-9'daki isteğe bağlı örneklerde yer alır.
 
 ## Task
 
@@ -15,9 +15,9 @@ Bu şema bir tasarım önerisidir. Yönerge tam bir görev şeması, alan zorunl
 | `createdAt` | ISO 8601 UTC tarih metni | Sunucu üretir | Değiştirilemez |
 | `updatedAt` | ISO 8601 UTC tarih metni | Başlangıçta `createdAt` ile aynı | Başarılı güncellemede sunucu yeniler |
 
-Önerilen durumlar: `pending`, `in_progress`, `completed`.
+Desteklenen durumlar: `pending`, `in_progress`, `completed`.
 
-Önerilen öncelikler: `low`, `medium`, `high`.
+Desteklenen öncelikler: `low`, `medium`, `high`.
 
 Örnek kayıt:
 
@@ -36,21 +36,26 @@ Bu şema bir tasarım önerisidir. Yönerge tam bir görev şeması, alan zorunl
 
 Bu kayıt örnektir; gerçek kullanıcı veya sistem kaydı değildir.
 
-## Önerilen veri kuralları
+## Uygulanan veri kuralları
 
 - `title`, `description` ve metin `assignee` değerlerinin başındaki ve sonundaki boşluklar temizlenir.
-- `title` uzunluğu 1-200 karakter, `description` en fazla 5000 karakter, metin `assignee` uzunluğu 1-100 karakter olarak önerilir. Atamasız görevde `assignee: null` kullanılır.
-- `status` ve `priority` yalnız listelenen değerleri alır. Durum geçişlerini sınırlayan ayrı bir iş akışı önerilmemiştir.
-- İstemci `id`, `createdAt` ve `updatedAt` alanlarını belirleyemez. Bunlar ve bilinmeyen alanlar istek gövdesinde verilirse `400` dönmesi önerilir.
+- `title` uzunluğu 1-200, `description` uzunluğu 0-5000, metin `assignee` uzunluğu 1-100 olmalıdır. Uzunluk JavaScript metin uzunluğuyla ölçülür. Atamasız görevde `assignee: null` kullanılır.
+- `status` ve `priority` yalnız listelenen değerleri alır. Durum geçişlerini sınırlayan ayrı bir iş akışı yoktur.
+- İstemci `id`, `createdAt` ve `updatedAt` alanlarını belirleyemez. Bunlar ve bilinmeyen alanlar istek gövdesinde verilirse `400` döner.
 - `PATCH` yalnız gönderilen düzenlenebilir alanları değiştirir. Boş güncelleme gövdesi reddedilir; gönderilmeyen alanlar korunur.
-- Çalışan tanımlayıcısı bir metindir. Kullanıcı tablosu, kayıt süreci veya referans bütünlüğü bu modelin parçası değildir.
+- Kimlik sunucuda UUID v4 olarak üretilir. HTTP ve saklama doğrulaması UUID sürüm/variant bitlerini denetler; kimlikler küçük harfle döner. Büyük harfle gönderilen geçerli UUID aynı kaydı bulur.
+- Çalışan tanımlayıcısı bir metindir. Kullanıcı tablosu, kayıt süreci veya referans bütünlüğü bu modelin parçası değildir. Çalışan bazlı listeleme harf duyarlı tam eşleşme kullanır.
 
-Bu kurallar PDF'nin zorunlu alan listesi olarak yorumlanmamalıdır. Ayrı validation middleware isteğe bağlı bir geliştirmedir (s.9). Temel veri sözleşmesi ile bu sözleşmeyi denetleyen middleware'in uygulanması ayrı konulardır.
+Bu kurallar PDF'nin zorunlu alan listesi değildir. Ayrı validation middleware isteğe bağlı bir geliştirmedir (s.9) ve bu sürüme dahil edilmiştir.
 
-## Kalıcılık önerisi
+## Kalıcılık
 
-Görevler ilk sürümde `data/tasks.json` dosyasında bir JSON dizisi olarak saklanabilir. Veriye erişim repository modülünden yapılır; router ve controller doğrudan dosya yazmaz.
+Görevler varsayılan olarak `data/tasks.json` dosyasında JSON dizisi olarak saklanır. `DATA_FILE` ortam değişkeni farklı bir yol seçebilir. Veriye erişim repository modülünden yapılır; router ve controller doğrudan dosya yazmaz.
 
-Yeni kurulumda dosyanın bulunmaması boş başlangıç verisi olarak ele alınabilir. Mevcut dosyanın okunamaması veya bozuk olması açık hata üretmeli; veri sessizce boşaltılmamalıdır. Yazmalar tek süreç içinde sıraya alınmalı ve geçici dosya üzerinden güvenli değiştirme yapılmalıdır. Yanıt ancak başarılı kalıcı yazma sonrasında dönmelidir.
+Yeni kurulumda dosyanın bulunmaması boş başlangıç verisidir; ilk başarılı oluşturmada dizin ve dosya yazılır. Başlangıçta mevcut veri okunur; geçersizse sunucu dinlemeye başlamaz. Çalışma sırasındaki okuma/yazma hatası API'de ayrıntıları gizlenen `500` yanıtı üretir. Veri sessizce boşaltılmaz.
 
-Çalışma sırasında oluşan görev verisi Git'e alınmaz. Örnek veri gerekirse gerçek çalışma dosyasından ayrı tutulur. Bu saklama önerisi küçük, tek süreçli uygulama içindir; çok süreçli eşzamanlı kullanım için yeterli olduğu varsayılmaz.
+Her okuma diskten yapılır. Dosyanın JSON dizisi olması, kayıtların tam alan seti ve türleri, metin sınırları, durum/öncelik değerleri, UUID'ler, benzersiz kimlikler ve kanonik UTC tarihleri denetlenir. Dosyadaki büyük harfli UUID'ler okuma sırasında küçük harfe normalleştirilir; yalnız okuma diski değiştirmez.
+
+Aynı dosya yolu için tüm işlemler tek süreç içinde ortak sıraya alınır. Yazma geçici dosya, dosya senkronizasyonu ve yeniden adlandırmayla tamamlanır; yanıt başarılı yazmadan sonra döner. Başarısız işlemden sonra kuyruk çalışmaya devam eder. Bu yaklaşım güç kesintilerine karşı tam bir veritabanı dayanıklılığı garantisi vermez.
+
+Çalışma sırasında oluşan görev verisi ve yerel deneme verileri Git'e alınmaz. Saklama küçük, tek süreçli uygulama içindir; çok süreçli eşzamanlı kullanım için yeterli değildir.

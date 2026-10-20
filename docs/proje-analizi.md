@@ -8,9 +8,9 @@ Kaynak: **Backend Geliştirme Proje Yönergesi.1.pdf**, 15 sayfa. Sayfa numarala
 
 Kaynak SHA-256: `d8fd5e9c5f9128cae5c6666f54c00562a41fe0042152f34566ad39a8fc540262`.
 
-Bu belgede **yönerge gereksinimi**, PDF'nin açıkça istediği sonucu; **tasarım önerisi**, yönergede belirlenmemiş bir konu için önerilen çözümü ifade eder. Öneriler henüz uygulanmış veya test edilmiş özellikler değildir.
+Bu belgede **yönerge gereksinimi**, PDF'nin açıkça istediği sonucu; **tasarım kararı**, yönergede belirlenmemiş bir konu için seçilen çözümü ifade eder. İlk analizde önerilen teknik kararlar uygulanmıştır; kaynak gereksinimlerle karıştırılmaması için ayrım korunmuştur.
 
-Mevcut çalışma yalnız analiz, tasarım belgeleri ve yerel Git başlangıcını kapsar. PDF'deki ileriki geliştirme ve public GitHub teslim adımları bu aşamada tamamlanmış sayılmaz.
+Yerel API; zorunlu CRUD, routing ve logger ile isteğe bağlı doğrulama, filtreleme, arama, çalışan listeleri, sayfalama, sıralama ve raporlamayı içerir. Otomatik HTTP/repository testleri ve Postman koleksiyonu vardır. Gerçek Postman ekran görüntüleri, Postman web oturumu beklediği için henüz eklenmemiştir. Public GitHub teslimi de açık durumdadır.
 
 ## Amaç ve kapsam
 
@@ -20,41 +20,41 @@ Belgenin başlığında proje yönetimi geçmesine rağmen ayrı `Project` veya 
 
 ## Zorunlu gereksinimler
 
-| Kimlik | Gereksinim | Kaynak | Planlanan karşılık / kabul ölçütü |
+| Kimlik | Gereksinim | Kaynak | Karşılık / kabul durumu |
 | --- | --- | --- | --- |
-| Z01 | Amaç ve senaryo analizi | s.5 | Kısa proje tanıtımı ve bu kapsam analizi |
-| Z02 | Veri modeli ve API tasarımı | s.5 | Görev alanları, endpoint listesi ve HTTP davranışları için tasarım belgeleri |
-| Z03 | Node.js, Express.js ve routing altyapısı | s.5 | Çalışan backend, düzenli klasör yapısı ve görev router'ı |
-| Z04 | Görev ekleme | s.6 | Geçerli istek yeni görev oluşturur; görev daha sonra okunabilir |
-| Z05 | Görev listeleme | s.6 | Kayıtlı görevler görüntülenir; boş liste başarıyla döner |
-| Z06 | Görev detayı | s.6 | Kimliği verilen görev görüntülenir |
-| Z07 | Görev güncelleme | s.3, 6 | Görev bilgileri, atanan kişi, durum ve öncelik değiştirilebilir |
-| Z08 | Görev silme | s.6 | Görev kaldırılır ve sonraki sorguda bulunamaz |
-| Z09 | Logger middleware | s.6 | Tüm API isteklerinde HTTP metodu, endpoint ve zaman damgası konsola veya dosyaya yazılır |
-| Z10 | Gerçek Postman testleri | s.7, 12 | Ekleme, listeleme, detay, güncelleme ve silme için başarılı istek/yanıt ekran görüntüleri |
-| Z11 | Temel teslim belgeleri ve kaynak kod | s.7, 12 | 1-2 sayfalık tanıtım, çalıştırma README'si, test görüntüleri, kaynaklar ve `package.json` |
-| Z12 | Tek public GitHub deposu | s.14 | Nihai kaynak ve belgelerin aynı public depoda teslim edilmesi |
+| Z01 | Amaç ve senaryo analizi | s.5 | [Proje tanıtımı](proje-tanitimi.md) ve bu analiz hazır |
+| Z02 | Veri modeli ve API tasarımı | s.5 | [Veri modeli](veri-modeli.md), [API tasarımı](api-tasarimi.md) ve [API örnekleri](api.md) hazır |
+| Z03 | Node.js, Express.js ve routing altyapısı | s.5 | Node.js 24.x / Express 5.3.0 uygulaması ve görev router'ı var |
+| Z04 | Görev ekleme | s.6 | `POST /tasks` kalıcı kayıt oluşturur; otomatik HTTP testi var |
+| Z05 | Görev listeleme | s.6 | `GET /tasks` kayıtları ve boş listeyi döndürür; otomatik HTTP testi var |
+| Z06 | Görev detayı | s.6 | `GET /tasks/:id` doğru kaydı döndürür; otomatik HTTP testi var |
+| Z07 | Görev güncelleme | s.3, 6 | `PATCH /tasks/:id` bilgileri, atamayı, durumu ve önceliği değiştirir; otomatik HTTP testi var |
+| Z08 | Görev silme | s.6 | `DELETE /tasks/:id` sonrasında kayıt bulunamaz; otomatik HTTP testi var |
+| Z09 | Logger middleware | s.6 | Metot, endpoint ve UTC zaman damgası konsola yazılır; hata istekleri de test edilir |
+| Z10 | Gerçek Postman testleri | s.7, 12 | **Açık:** koleksiyon hazır; beş işlemin gerçek ekran görüntüleri henüz yok |
+| Z11 | Temel teslim belgeleri ve kaynak kod | s.7, 12 | Tanıtım, README, kaynaklar ve `package.json` hazır; test görüntüleri bekliyor |
+| Z12 | Tek public GitHub deposu | s.14 | **Açık:** yerel Git deposu var; public uzak depo henüz oluşturulmadı |
 
-S.5'teki veri modeli ve API tasarım çıktıları, s.11'de isteğe bağlı sunulan kapsamlı dokümantasyonla aynı şey değildir. Temel tasarım belgeleri şimdi hazırlanır; her endpoint'in ayrıntılı örnekleri ve entegrasyon kılavuzu daha sonra genişletilebilir.
+S.5'teki veri modeli ve API tasarım çıktıları, s.11'de isteğe bağlı sunulan kapsamlı dokümantasyonla aynı şey değildir. Temel tasarım belgelerine ek olarak ayrıntılı endpoint örnekleri, test planı ve kullanım kılavuzu hazırlanmıştır.
 
 ## İsteğe bağlı kapsamın değerlendirilmesi
 
-İsteğe bağlı başlıkların tümü değerlendirme planındadır. Yönerge bunların teslim ve değerlendirmeye dahil olmadığını açıkça belirtir (s.4, 8-11, 15). Aşağıdaki sıra teknik bağımlılıklara göre önerilmiştir; süre ve doğrulama yükü temel teslimi etkilerse ilgili genişletme ertelenebilir.
+Yönerge bu başlıkların teslim ve değerlendirmeye dahil olmadığını açıkça belirtir (s.4, 8-11, 15). Zorunlu API davranışlarının ardından aşağıdaki genişletmeler uygulanmıştır. Postman ekran görüntüsü ve public depo gereksinimleri, bu genişletmelerin tamamlanmış olmasına rağmen açık kalır.
 
-| Sıra | Başlık | Kaynak | Beklenen yarar | Ek yük ve dikkat edilecek konu |
+| Sıra | Başlık | Kaynak | Uygulanan karşılık | Doğrulama odağı |
 | --- | --- | --- | --- | --- |
-| 1 | Validation middleware | s.9 | Geçersiz veya eksik verinin açıklayıcı `400` yanıtıyla reddedilmesi | Düşük-orta; alan zorunlulukları, enum'lar ve kısmi güncelleme kuralları netleşmeli |
-| 2 | Durum ve öncelik filtreleri | s.8 | Görev listesinin daraltılması | Düşük; birlikte verilen filtrelerin kesişimi ve geçersiz değerler tanımlanmalı |
-| 3 | Arama ve kullanıcı bazlı listeleme | s.8 | Açıklama/başlık veya atanan kişi üzerinden erişim | Düşük-orta; arama kapsamı, harf duyarlılığı ve route sırası belirlenmeli |
-| 4 | Sıralama ve sayfalama | s.8 | Düzenli ve sınırlanabilir liste yanıtları | Orta; eşit değerlerde kararlı sıra, limit üst sınırı ve boş sayfa davranışı gerekir |
-| 5 | Tamamlanan/bekleyen görev raporları ve genel özet | s.10 | Görev durumlarının sayısal özeti | Düşük-orta; bekleyen görev tanımı ve toplamların tutarlılığı gerekir |
-| 6 | Ayrıntılı API, test ve kullanım belgeleri | s.11 | API kullanımının ve testlerin tekrarlanması | Orta; örnekler son çalışan uygulamayla karşılaştırılmalı |
+| 1 | Validation middleware | s.9 | Alan türü/sınırı, enum, UUID, JSON ve kısmi güncelleme denetimleri | Geçersiz isteğin veri değiştirmemesi ve Türkçe hata ayrıntıları |
+| 2 | Durum ve öncelik filtreleri | s.8 | `/tasks?status=completed&priority=high` | Filtre kesişimi, boş sonuç ve geçersiz değerler |
+| 3 | Arama ve kullanıcı bazlı listeleme | s.8 | `/tasks/search` ve `/tasks/assignee/:assignee` | Türkçe harf dönüşümü, başlık/açıklama araması, tam çalışan eşleşmesi |
+| 4 | Sıralama ve sayfalama | s.8 | Dört sıralama alanı, 1-100 limit, filtre sonrası sayfalama | Kimlikle kararlı eşitlik, sayfa sınırları ve toplam |
+| 5 | Tamamlanan/bekleyen görev raporları ve genel özet | s.10 | `/reports/completed`, `/reports/pending`, `/reports/summary` | `pending` tanımı ve dağılım toplamının korunması |
+| 6 | Ayrıntılı API, test ve kullanım belgeleri | s.11 | [API](api.md), [test planı](test-plani.md), [kullanım kılavuzu](kullanim-kilavuzu.md) | Çalışan sözleşme ve tekrarlanabilir örnekler |
 
-Genişletmeler ayrı kullanıcı veya proje yönetimi modülleri gerektirmez. Arama, filtreleme, sayfalama ve sıralama aynı listeleme mantığını paylaşmalıdır. Raporlar aynı görev deposunu kullanmalıdır.
+Genişletmeler ayrı kullanıcı veya proje yönetimi modülleri gerektirmez. Arama, filtreleme, sayfalama ve sıralama aynı listeleme mantığını paylaşır. Raporlar aynı görev deposunu kullanır.
 
-## Belirsizlikler ve önerilen kararlar
+## Yönergede belirlenmeyen ayrıntılar ve uygulanan kararlar
 
-| Konu | PDF'nin belirlediği | Tasarım önerisi |
+| Konu | PDF'nin belirlediği | Uygulanan tasarım kararı |
 | --- | --- | --- |
 | Görev şeması | s.9'da `title`, `description`, `priority`, `assignee`; s.8'de `status`, `createdAt` örnekleri var; tam şema yok | `id`, `title`, `description`, `status`, `priority`, `assignee`, `createdAt`, `updatedAt` |
 | Kimlik | Türü belirtilmiyor | Sunucuda üretilen UUID metni |
@@ -65,49 +65,54 @@ Genişletmeler ayrı kullanıcı veya proje yönetimi modülleri gerektirmez. Ar
 | Veri saklama | Veritabanı veya kalıcılık şartı yok | Tek süreçli ilk sürümde JSON dosyası ve ayrı repository modülü |
 | Güncelleme metodu | PUT/PATCH belirtilmiyor | Kısmi güncelleme için `PATCH /tasks/:id` |
 | Yanıt/hata biçimi | Temel CRUD için kesin şema yok | Başarılarda `data`, hatalarda `error` zarfı; silmede gövdesiz `204` |
-| Çalışma ortamı | Node.js ve Express.js belirtiliyor; sürüm yok | Geliştirme başlangıcında desteklenen sürümlerin doğrulanması ve sabitlenmesi |
+| Çalışma ortamı | Node.js ve Express.js belirtiliyor; sürüm yok | Node.js 24.x; doğrulanan Node 24.21.0/npm 12.2.0, sabit Express 5.3.0 |
 
-Alan türleri ve API sözleşmeleri [veri modeli](veri-modeli.md) ve [API tasarımı](api-tasarimi.md) belgelerinde ayrıntılandırılmıştır. Bu öneriler öğretim elemanının ayrıca verdiği kurallarla çelişirse yeniden değerlendirilmelidir.
+Alan türleri ve HTTP sözleşmesi [veri modeli](veri-modeli.md) ve [API tasarımında](api-tasarimi.md) ayrıntılıdır. Öğretim elemanının ayrıca verdiği kurallarla çelişen bir karar olursa yeniden değerlendirilmelidir.
 
-## Mimari önerisi
+## Uygulanan mimari
 
-HTTP istekleri logger, JSON gövde ayrıştırma, görev router'ı, controller ve repository sırasını izler. Bulunamayan route ve beklenmeyen hata yanıtları merkezi olarak ele alınır. Validation seçildiğinde controller öncesine eklenir. Logger, başarısız ayrıştırma veya bulunamayan endpoint isteklerini de görebilmesi için en başta yer alır.
+HTTP istekleri logger, isteğe bağlı CORS, JSON gövde ayrıştırma, router, doğrulama, controller ve repository sırasını izler. Bulunamayan route ve beklenmeyen hata yanıtları merkezi olarak ele alınır. Logger, başarısız ayrıştırma ve bulunamayan endpoint isteklerini de görebilmesi için en başta yer alır. Rapor yolları aynı repository'den okur.
 
-Planlanan kaynak düzeni:
+Kaynak düzeni:
 
 ```text
 src/
   app.js
   server.js
-  routes/tasks.routes.js
+  routes/
+    tasks.routes.js
+    reports.routes.js
   controllers/tasks.controller.js
   repositories/tasks.repository.js
-  middleware/request-logger.js
+  middleware/
+  lib/
 data/
 docs/
+postman/
+test/
+scripts/
 ```
 
-Bu ağaç öneridir; kaynak dosyaları henüz oluşturulmamıştır. Rapor router/controller'ı ve validation middleware yalnız ilgili genişletmeler uygulanırken eklenir. İlk sürüm için ayrı bir servis katmanı gerekli görünmemektedir.
+`middleware/` istek, gövde ve query denetimlerini; `lib/` ortak şema, hata ve liste seçimini içerir. Ayrı servis katmanı bulunmaz. Sağlık kontrolü `/health` yolundadır.
 
 ## Veri saklama riski
 
-Bellek içi dizi kolaydır fakat yeniden başlatmada veriyi kaybeder. JSON dosyası önerisi bu kaybı önler; eşzamanlı yazma ve bozuk dosya risklerini ayrıca ele almak gerekir. Tek süreçte yazmalar sıraya alınmalı ve dosya güvenli biçimde değiştirilmelidir. Okuma hatasında mevcut verinin üzerine boş liste yazılmamalıdır. Çok süreçli çalışma veya yoğun veri ihtiyacı doğarsa saklama kararı tekrar ele alınmalıdır.
+JSON dosyası normal yeniden başlatmalarda veriyi korur. Aynı dosyanın işlemleri tek süreçte ortak sıraya alınır; geçici dosya, dosya senkronizasyonu ve yeniden adlandırma kullanılır. Kayıt şeması ve benzersiz UUID denetlenir. Okuma/şema hatasında mevcut verinin üzerine boş liste yazılmaz; hata sonrasında kuyruk çalışmayı sürdürebilir. Çok süreçli çalışma, yoğun veri ve tam güç kesintisi dayanıklılığı bu yaklaşımın garantileri arasında değildir.
 
-Bu, yönergenin zorunlu tuttuğu bir veritabanı mimarisi değildir; küçük eğitim projesi için başlangıç önerisidir.
+Bu, yönergenin zorunlu tuttuğu bir veritabanı mimarisi değildir; küçük eğitim projesinin ilk sürümü için seçilen saklama yaklaşımıdır.
 
-## Uygulama ve doğrulama sırası
+## Uygulama ve kalan doğrulama
 
-1. Veri modeli ve API sözleşmesi taslağını uygulama öncesi kesinleştirme.
-2. Node.js/Express altyapısı, görev routing'i ve logger oluşturma.
-3. Beş CRUD işlemi ile atama, durum ve öncelik güncellemelerini tamamlama.
-4. Temel CRUD akışını Postman'de çalıştırma ve gerçek ekran görüntülerini kaydetme.
-5. Validation, liste genişletmeleri ve raporlamayı sırayla değerlendirme; her eklemeden sonra temel CRUD akışını yeniden doğrulama.
-6. README'yi çalışan komutlarla tamamlama; uygun görülürse ayrıntılı API/test/kullanım belgelerini genişletme.
-7. Son içerik ve teslim kontrolünün ardından tek public GitHub deposunda teslim.
+1. Veri modeli, HTTP sözleşmesi, Node.js/Express altyapısı ve logger uygulandı.
+2. Beş CRUD işlemi, atama/durum/öncelik yönetimi ve JSON kalıcılığı otomatik testlerle doğrulanıyor.
+3. Uygun isteğe bağlı özellikler uygulandı; temel akışlar ve genişletmeler aynı test paketinde yer alıyor.
+4. README, ayrıntılı API/test/kullanım belgeleri ve Postman koleksiyonu hazırlandı.
+5. **Kalan:** Postman web oturumu açıldıktan sonra gerçek CRUD isteklerini çalıştırıp ekran görüntülerini ekleme.
+6. **Kalan:** Son teslim kontrolünden sonra tek public GitHub deposunda yayımlama.
 
 Yönergedeki "5 günlük eğitim kapsamı" bir kapsam tanımıdır; burada takvim veya teslim tarihi varsayılmamıştır.
 
-## Planlanan test kanıtları
+## Bekleyen Postman test kanıtları
 
 | İşlem | Beklenen gözlem | Planlanan ekran görüntüsü |
 | --- | --- | --- |
@@ -117,9 +122,9 @@ Yönergedeki "5 günlük eğitim kapsamı" bir kapsam tanımıdır; burada takvi
 | Güncelleme | Değiştirilen alanların okunabilmesi | `docs/test-kanitlari/04-gorev-guncelleme.png` |
 | Silme | Silme yanıtı ve sonrasında kaydın bulunamaması | `docs/test-kanitlari/05-gorev-silme.png`; gerekirse ek doğrulama görüntüsü |
 
-Bu yollar gelecekte üretilecek kanıtlar içindir; henüz test veya ekran görüntüsü yoktur. Postman koleksiyonu veya otomatik test eklenmesi, yönergedeki gerçek ekran görüntülerinin yerine geçmez.
+Tablodaki dosya adları hedef adlardır; görüntüler henüz oluşturulmamıştır. Postman koleksiyonu ve otomatik testler, yönergedeki gerçek ekran görüntülerinin yerine geçmez. Kayıt adımları [test planındadır](test-plani.md).
 
-Ek kontroller: bulunamayan görev, bozuk JSON, logger'ın üç zorunlu alanı ve JSON saklama seçilirse yeniden başlatma sonrası veri. Genişletmeler uygulanırsa geçersiz alanlar, birleşik filtreler, boş arama sonucu, sayfa sınırları, kararlı sıralama ve rapor toplamları ayrıca sınanır.
+Otomatik kontroller bulunamayan görev, bozuk JSON, logger alanları, kalıcılık, eşzamanlı işlemler, bozuk dosyanın korunması ve hatadan sonra kurtarmayı içerir. Genişletme testlerinde geçersiz alanlar, birleşik filtreler, Türkçe arama, boş sonuç, sayfa sınırları, kararlı sıralama ve rapor toplamları sınanır. Çalıştırma komutları ve kapsam [test planındadır](test-plani.md).
 
 ## Puanlama ve teslim kontrolü
 
@@ -136,10 +141,10 @@ Ek kontroller: bulunamayan görev, bozuk JSON, logger'ın üç zorunlu alanı ve
 Kaynak: s.13. İsteğe bağlı işlerin ayrıca puan kazandırdığına dair bilgi yoktur.
 
 - [x] Gereksinimler ve kaynak sayfaları incelendi.
-- [x] Proje tanıtımı, veri modeli ve API taslağı hazırlandı.
-- [ ] Çalışan backend ve `package.json` oluşturuldu.
-- [ ] Beş CRUD işlemi ve logger gerçek ortamda doğrulandı.
+- [x] Proje tanıtımı, veri modeli ve API sözleşmesi hazırlandı.
+- [x] Çalışan backend ve `package.json` oluşturuldu.
+- [x] Beş CRUD işlemi ve logger yerel HTTP testlerinde doğrulandı.
 - [ ] Gerçek Postman ekran görüntüleri eklendi.
-- [ ] README kurulum ve çalıştırma adımları doğrulandı.
-- [ ] İsteğe bağlı geliştirmelerin son kapsamı ve testleri kaydedildi.
+- [x] README kurulum ve çalıştırma adımları eklendi.
+- [x] İsteğe bağlı geliştirmelerin son kapsamı ve testleri kaydedildi.
 - [ ] Kaynak ve teslim belgeleri tek public GitHub deposunda yayımlandı.

@@ -11,8 +11,9 @@ logs/
 .env.*
 !.env.example
 
-data/tasks.json
-data/*.tmp
+data/**/*.json
+!data/**/*.example.json
+data/**/*.tmp
 
 .DS_Store
 Thumbs.db

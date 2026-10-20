@@ -1,10 +1,10 @@
 # TaskFlow - Proje Tanıtımı
 
-Durum: Geliştirme öncesi tasarım taslağı.
+Durum: Yerel API uygulanmıştır; Postman ekran görüntüleri ve public GitHub teslimi beklemektedir.
 
 ## Amaç
 
-TaskFlow, bir yazılım ekibindeki görevlerin ve çalışan sorumluluklarının takip edilmesi için tasarlanan bir REST API projesidir. Node.js ve Express.js kullanılarak görev oluşturma, listeleme, detay görüntüleme, güncelleme ve silme işlemlerinin sunulması hedeflenir.
+TaskFlow, bir yazılım ekibindeki görevlerin ve çalışan sorumluluklarının takibi için geliştirilmiş REST API projesidir. Node.js ve Express.js ile görev oluşturma, listeleme, detay görüntüleme, güncelleme ve silme işlemlerini sunar.
 
 ## Senaryo
 
@@ -18,16 +18,18 @@ Bir yazılım şirketinde yapılacak işler görev olarak kaydedilir. Görev bir
 - Görev üzerinde çalışan ataması, durum ve öncelik yönetimi.
 - Node.js ve Express.js tabanlı routing yapısı.
 - Her API isteğinin metot, endpoint ve zaman damgasını kaydeden logger middleware.
-- Temel CRUD akışlarının Postman üzerinden doğrulanması.
+- Yeniden başlatma sonrasında kayıtları koruyan JSON dosyası ve merkezi hata yönetimi.
 
-Görev, tasarımın temel veri varlığıdır. Kullanıcı ve proje yönetimi için ayrı modüller bu ilk kapsamda tanımlanmamıştır. API'nin tüketimi Postman gibi HTTP istemcileri üzerinden planlanmaktadır.
+Görev, sistemin temel veri varlığıdır. Kullanıcı ve proje yönetimi için ayrı modüller bulunmaz. Çalışan ataması metin tanımlayıcısıyla yapılır; kullanıcı hesabı veya oturum açma gerektirmez. API, Postman gibi HTTP istemcileriyle kullanılır.
 
-## Değerlendirilecek genişletmeler
+## Uygulanan isteğe bağlı genişletmeler
 
-Alan doğrulama, duruma ve önceliğe göre filtreleme, görev arama, atanan kişiye göre listeleme, sayfalama, sıralama, tamamlanan/bekleyen görev sayıları ve genel sistem özeti değerlendirmeye alınmıştır. Ayrıntılı API, test ve kullanım belgeleri de çalışan uygulama üzerinden genişletilebilir. Bu özellikler yönergede isteğe bağlıdır; temel teslimin tamamlanmasına göre önceliklendirilir.
+Alan doğrulama; duruma ve önceliğe göre birleşik filtreleme; başlık ve açıklamada Türkçe harf dönüşümünü gözeten arama; atanan kişiye göre listeleme; sayfalama ve sıralama uygulanmıştır. Rapor endpoint'leri tamamlanan ve bekleyen görev sayılarını ve genel durum dağılımını verir. API, test ve kullanım kılavuzları bu davranışları açıklar. Bu özellikler yönergede isteğe bağlıdır; temel CRUD gereksinimlerinden ayrı değerlendirilir.
+
+Görevler varsayılan olarak `data/tasks.json` içinde tutulur. Veri dosyası bulunmuyorsa boş başlangıç yapılır; bozuk veya okunamayan mevcut veri için hata verilir. Aynı dosyaya erişim tek süreç içinde sıraya alınır. Saklama yaklaşımı küçük, tek süreçli kullanımla sınırlıdır.
 
 ## Hedeflenen teslim
 
-Teslim paketi kaynak kodları ve `package.json`, bu kısa proje tanıtımı, çalıştırma adımlarını içeren README ve beş temel CRUD işleminin gerçek Postman ekran görüntülerinden oluşacaktır. Nihai teslim tek public GitHub deposu üzerinden yapılacaktır.
+Kaynak kodları, `package.json`/kilit dosyası, bu tanıtım, çalıştırma README'si, tasarım ve kullanım belgeleri, otomatik testler ve Postman koleksiyonu depoda bulunur. Beş temel CRUD işleminin gerçek Postman ekran görüntüleri henüz eklenmemiştir; Postman web oturumu beklenmektedir. Nihai teslimin yapılacağı tek public GitHub deposu da henüz oluşturulmamıştır.
 
-Kaynak: Backend Geliştirme Proje Yönergesi.1.pdf, s.2-7 ve s.12-15. Veri modeli, HTTP sözleşmesi ve saklama yöntemi için seçilen teknik ayrıntılar ayrıca tasarım belgelerinde açıklanır. Bu tanıtım hedeflenen davranışı anlatır; çalışan uygulama veya tamamlanmış test kanıtı değildir.
+Kaynak: Backend Geliştirme Proje Yönergesi.1.pdf, s.2-7 ve s.12-15. Yönergenin belirlemediği veri modeli, HTTP sözleşmesi ve saklama kararları [analizde](proje-analizi.md) ayrıca ayrılır. Otomatik test kapsamı ve kalan Postman kanıtları [test planında](test-plani.md) açıklanır.
