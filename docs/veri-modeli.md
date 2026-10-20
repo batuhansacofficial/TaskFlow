@@ -1,6 +1,6 @@
 # TaskFlow - Veri Modeli
 
-Bu schema, uygulanan tasarım kararıdır. Yönerge tam bir task schema, alan zorunlulukları veya database seçimi tanımlamaz. Görev atama, durum ve öncelik ihtiyacı s.3'te; bazı field adları s.8-9'daki isteğe bağlı örneklerde yer alır.
+Bu schema, uygulanan tasarım kararıdır. Yönerge tam bir task schema, alan zorunlulukları veya database seçimi tanımlamaz. Görev atama, durum ve öncelik ihtiyacı s.3'te; bazı alan adları s.8-9'daki isteğe bağlı örneklerde yer alır.
 
 ## Task
 
@@ -43,16 +43,16 @@ Bu kayıt örnektir; gerçek kullanıcı veya sistem kaydı değildir.
 - `status` ve `priority` yalnız listelenen değerleri alır. Durum geçişlerini sınırlayan ayrı bir iş akışı yoktur.
 - Client `id`, `createdAt` ve `updatedAt` alanlarını belirleyemez. Bunlar ve bilinmeyen alanlar request body içinde verilirse `400` döner.
 - `PATCH` yalnız gönderilen düzenlenebilir alanları değiştirir. Boş güncelleme request body reddedilir; gönderilmeyen alanlar korunur.
-- Kimlik server'da UUID v4 olarak üretilir. HTTP ve persistence validation UUID sürüm/variant bitlerini denetler; kimlikler küçük harfle döner. Büyük harfle gönderilen geçerli UUID aynı kaydı bulur.
+- Kimlik server tarafından UUID v4 olarak üretilir. HTTP ve persistence validation işlemleri UUID sürüm ve variant bitlerini denetler; kimlikler küçük harfle döner. Büyük harfle gönderilen geçerli UUID aynı kaydı bulur.
 - Çalışan tanımlayıcısı bir metindir. Kullanıcı tablosu, kayıt süreci veya referans bütünlüğü bu modelin parçası değildir. Çalışan bazlı listeleme case-sensitive tam eşleşme kullanır.
 
 Bu kurallar PDF'nin zorunlu alan listesi değildir. Ayrı validation middleware isteğe bağlı bir geliştirmedir (s.9) ve bu sürüme dahil edilmiştir.
 
 ## Persistence
 
-Görevler varsayılan olarak `data/tasks.json` dosyasında JSON array olarak saklanır. `DATA_FILE` environment variable farklı bir yol seçebilir. Veriye erişim repository modülünden yapılır; router ve controller doğrudan dosya yazmaz.
+Görevler varsayılan olarak `data/tasks.json` dosyasında JSON array olarak saklanır. `DATA_FILE` environment variable ile farklı bir yol seçilebilir. Veriye erişim repository modülünden yapılır; router ve controller doğrudan dosya yazmaz.
 
-Yeni kurulumda dosyanın bulunmaması boş başlangıç verisidir; ilk başarılı oluşturmada dizin ve dosya yazılır. Başlangıçta mevcut veri okunur; geçersizse server dinlemeye başlamaz. Çalışma sırasındaki okuma/yazma hatası API'de ayrıntıları gizlenen `500` response'u üretir. Veri sessizce boşaltılmaz.
+Yeni kurulumda dosyanın bulunmaması boş başlangıç verisidir; ilk başarılı oluşturmada dizin ve dosya yazılır. Başlangıçta mevcut veri okunur; geçersizse server dinlemeye başlamaz. Çalışma sırasındaki okuma/yazma hatasında API, ayrıntıları gizleyen bir `500` response üretir. Veri sessizce boşaltılmaz.
 
 Her okuma diskten yapılır. Dosyanın JSON array biçiminde olması, kayıtların tam alan seti ve türleri, metin sınırları, durum/öncelik değerleri, UUID'ler, benzersiz kimlikler ve kanonik UTC tarihleri denetlenir. Dosyadaki büyük harfli UUID'ler okuma sırasında küçük harfe normalleştirilir; yalnız okuma diski değiştirmez.
 

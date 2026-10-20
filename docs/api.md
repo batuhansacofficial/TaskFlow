@@ -1,17 +1,17 @@
 # TaskFlow - API Kılavuzu
 
-Yerel temel adres: `http://127.0.0.1:3000`. Aşağıdaki kimlik, tarih ve kayıtlar sözleşme örnekleridir; kaydedilmiş test response'u değildir. Gerçek `id` değerini oluşturma response'undan alın.
+Yerel temel adres: `http://127.0.0.1:3000`. Aşağıdaki kimlikler, tarihler ve kayıtlar API sözleşmesini açıklayan örneklerdir; gerçek testlerden kaydedilmiş response'lar değildir. Gerçek `id` değerini görev oluşturma response'undan alın.
 
 ## Ortak sözleşme
 
-- Body içeren write request'lerde `Content-Type: application/json` kullanılır; request body bir JSON object olmalıdır.
-- Tek kayıt/rapor response'u `data`, liste response'u `data` ve `meta` alanlarını içerir. Silme `204` ile boş body döndürür.
-- Oluşturmada yalnız `title` zorunludur. `description: ""`, `status: "pending"`, `priority: "medium"`, `assignee: null` varsayılandır.
+- Body içeren yazma request'leri için `Content-Type: application/json` kullanılır; request body bir JSON object olmalıdır.
+- Tek kayıt ve rapor için dönen response `data`, liste için dönen response ise `data` ve `meta` alanlarını içerir. Silme işlemi `204` ile boş body döndürür.
+- Görev oluştururken yalnız `title` zorunludur. Varsayılan değerler `description: ""`, `status: "pending"`, `priority: "medium"` ve `assignee: null` olarak belirlenmiştir.
 - Durumlar: `pending`, `in_progress`, `completed`. Öncelikler: `low`, `medium`, `high`.
-- `title` 1-200, `description` 0-5000, metin `assignee` 1-100 uzunluğunda olmalıdır. Metinlerin dış boşlukları temizlenir. Uzunluk JavaScript string length değeriyle ölçülür.
+- Metin uzunluğu `title` için 1-200, `description` için 0-5000, metin olarak gönderilen `assignee` için 1-100 olmalıdır. Metinlerin başındaki ve sonundaki boşluklar temizlenir. Uzunluk, JavaScript string length değeriyle ölçülür.
 - `id`, `createdAt`, `updatedAt` ve bilinmeyen alanlar client'tan kabul edilmez. `PATCH` en az bir düzenlenebilir alan gerektirir; gönderilmeyen alanlar korunur.
-- UUID'ler sürüm/variant biçimine göre doğrulanır. Büyük/küçük harf aynı kimliği belirtir; dönen kimlik küçük harflidir.
-- Request body sınırı 100 KB'dır. Hatalar Türkçe mesaj ve sabit makine koduyla döner.
+- UUID'ler sürüm ve variant biçimine göre doğrulanır. UUID içindeki harflerin büyük veya küçük olması kimliği değiştirmez; dönen kimlikte küçük harfler kullanılır.
+- Request body sınırı 100 KB olarak belirlenmiştir. Hatalar Türkçe mesaj ve sabit makine koduyla döner.
 
 ## Health check
 
@@ -143,7 +143,7 @@ Content-Type: application/json
 }
 ```
 
-Başlık/açıklama ve oluşturma zamanı korunur. Atamayı kaldırmak için `{"assignee":null}` gönderilir. Desteklenen durumlar arasında ayrıca bir geçiş kısıtı yoktur. Geçerli fakat bulunmayan kayıt `404` döndürür.
+Bu örnekte başlık, açıklama ve oluşturma zamanı korunur. Atamayı kaldırmak için `{"assignee":null}` gönderilir. Desteklenen durumlar arasında ayrıca bir geçiş kısıtı yoktur. Geçerli bir kimlikle aranan kayıt bulunamazsa `404` döner.
 
 ## Görev silme
 
@@ -179,7 +179,7 @@ GET /tasks/search?keyword=backend&status=pending
 }
 ```
 
-`keyword` zorunludur; dış boşluklar temizlendikten sonra 1-200 karakter olmalıdır. Başlık ve açıklamada alt metin aranır. Dönüşüm `tr-TR` yerel kuralını kullanır: `İ/i` ve `I/ı` çiftleri aynı kabul edilir. Aksan veya noktalama kaldırılmaz. URL içindeki Türkçe harf ve boşlukları URL encoding ile gönderin. Ortak filter, sorting ve pagination parametreleri burada da kullanılabilir.
+`keyword` zorunludur; başındaki ve sonundaki boşluklar temizlendikten sonra 1-200 karakter olmalıdır. Başlık ve açıklamada alt metin aranır. Harf dönüşümünde `tr-TR` yerel kuralları kullanılır: `İ/i` ve `I/ı` çiftleri aynı kabul edilir. Aksan ve noktalama işaretleri kaldırılmaz. URL içindeki Türkçe harfleri ve boşlukları URL encoding ile gönderin. Ortak filter, sorting ve pagination parametreleri burada da kullanılabilir.
 
 ## Çalışana göre listeleme
 
@@ -207,7 +207,7 @@ GET /tasks/assignee/musa?priority=high
 }
 ```
 
-Çalışan metni dış boşlukları temizlendikten sonra 1-100 uzunluğunda olmalıdır. Eşleşme tam ve case-sensitive olarak yapılır: `musa` ile `Musa` farklıdır. Eşleşmeyen çalışan için boş liste döner; bir kullanıcı kaydı aranmaz. Ortak liste parametreleri desteklenir.
+Çalışan adı, başındaki ve sonundaki boşluklar temizlendikten sonra 1-100 karakter uzunluğunda olmalıdır. Tam eşleşme case-sensitive olarak yapılır: `musa` ile `Musa` farklıdır. Eşleşen görev yoksa boş liste döner; ayrıca bir kullanıcı kaydı aranmaz. Ortak liste parametreleri desteklenir.
 
 ## Ortak query kuralları
 
@@ -222,7 +222,7 @@ Bu tablo `/tasks`, `/tasks/search` ve `/tasks/assignee/:assignee` liste endpoint
 | `limit` | 1-100 arası tam sayı | `page` tek başına verilirse 10 |
 | `keyword` | 1-200 uzunluğunda metin | Yalnız `/tasks/search` için; bu endpoint için zorunlu |
 
-Filter'lar kesişim olarak uygulanır; ardından sorting, sonra pagination gelir. `total` sayfa diliminden önceki eşleşme sayısıdır. Sonuç yoksa `totalPages: 0`; geçerli fakat aralık dışındaki sayfada boş `data` döner.
+Farklı filter seçenekleri kesişim olarak uygulanır; ardından sırasıyla sorting ve pagination uygulanır. `total`, pagination uygulanmadan önceki eşleşme sayısıdır. Sonuç yoksa `totalPages: 0` döner; geçerli fakat aralık dışındaki bir sayfa için `data` boş olur.
 
 Öncelik sırası `low < medium < high`; başlık sırası Türkçe yerel karşılaştırmadır. Sorting değerleri eşitse `id` her zaman artan yönde belirleyicidir. Query anahtarları tek kez kullanılabilir; bilinmeyen anahtar, boş/geçersiz enum veya sort, `page=0`, `page=01`, kesirli/işaretli sayı ve `limit=101` gibi değerler `400 INVALID_QUERY` döndürür. `keyword` normal `/tasks` endpoint'inde desteklenmez.
 
@@ -238,7 +238,7 @@ GET /reports/completed
 { "data": { "count": 2 } }
 ```
 
-Yalnız `completed` kayıtlar sayılır.
+Yalnız `completed` durumundaki kayıtlar sayılır.
 
 ## Bekleyen görev sayısı
 
@@ -252,7 +252,7 @@ GET /reports/pending
 { "data": { "count": 1 } }
 ```
 
-Yalnız `pending` sayılır; `in_progress` bu sayıya dahil değildir.
+Yalnız `pending` durumundaki kayıtlar sayılır; `in_progress` bu sayıya dahil değildir.
 
 ## Genel özet
 
@@ -266,7 +266,7 @@ GET /reports/summary
 { "data": { "total": 4, "pending": 1, "inProgress": 1, "completed": 2 } }
 ```
 
-Her rapor aynı request içinde tek bir görev listesi okuyarak hesaplanır. Özette `pending + inProgress + completed = total` olur. Boş repository içinde tüm sayılar sıfırdır. Rapor endpoint'leri query parametresi kabul etmez; örneğin `/reports/summary?status=pending` `400 INVALID_QUERY` döndürür.
+Her rapor, aynı request içinde görev listesi bir kez okunarak hesaplanır. Özette `pending + inProgress + completed = total` eşitliği sağlanır. Repository boşsa tüm sayılar sıfırdır. Rapor endpoint'leri query parametresi kabul etmez; örneğin `/reports/summary?status=pending` request'i `400 INVALID_QUERY` döndürür.
 
 ## Hatalar
 
@@ -281,7 +281,7 @@ Ortak error envelope:
 }
 ```
 
-Örneğin `POST /tasks` request body `{"title":"  "}` ise `400` response'u:
+Örneğin `POST /tasks` için request body `{"title":"  "}` olduğunda `400` response'u aşağıdaki gibidir:
 
 ```json
 {
@@ -310,4 +310,4 @@ Ortak error envelope:
 | `415` | `UNSUPPORTED_ENCODING` | Request character/content encoding desteklenmiyor |
 | `500` | `INTERNAL_ERROR` | Veri saklama veya beklenmeyen server hatası |
 
-Dosya yolu, stack trace ve iç hata ayrıntıları HTTP response'una eklenmez. Veri dosyası bozuksa mevcut içerik korunur. Tanı ve yeniden çalıştırma adımları [test planında](test-plani.md), configuration [README'de](../README.md) açıklanır.
+Dosya yolu, stack trace ve iç hata ayrıntıları HTTP response'una eklenmez. Veri dosyası bozuksa mevcut içerik korunur. Hata tespiti ve yeniden çalıştırma adımları [test planında](test-plani.md), configuration seçenekleri ise [README'de](../README.md) açıklanır.

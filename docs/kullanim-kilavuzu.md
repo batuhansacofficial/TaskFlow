@@ -2,9 +2,9 @@
 
 Kurulum ve configuration [README'de](../README.md), tüm alan ve hata örnekleri [API kılavuzundadır](api.md). Buradaki akış Postman veya başka bir HTTP client ile uygulanabilir. Temel adres varsayılan olarak `http://127.0.0.1:3000` değeridir.
 
-## 1. Server'ı kontrol etme
+## 1. Server durumunu kontrol etme
 
-`npm start` sonrasında `GET /health` gönderin. `200` ve `{"data":{"status":"ok"}}` response'u beklenir.
+`npm start` sonrasında `GET /health` gönderin. `200` ve `{"data":{"status":"ok"}}` içeren response beklenir.
 
 ## 2. Görev oluşturma
 
@@ -18,7 +18,7 @@ Kurulum ve configuration [README'de](../README.md), tüm alan ve hata örnekleri
 }
 ```
 
-`201` response içindeki `data.id` değerini kaydedin. Durum başlangıçta `pending`, atama `null` olur. Sonraki endpoint'lerde `<id>` yerine bu gerçek UUID'yi kullanın. Postman collection içindeki oluşturma request'i kimliği `taskId` değişkenine kendisi kaydeder.
+`201` response içindeki `data.id` değerini kaydedin. Durum başlangıçta `pending`, atama `null` olur. Sonraki endpoint adreslerinde `<id>` yerine bu gerçek UUID'yi kullanın. Postman collection, oluşturma response içindeki kimliği `taskId` değişkenine otomatik olarak kaydeder.
 
 ## 3. Atama ve ilerleme
 
@@ -28,7 +28,7 @@ Kurulum ve configuration [README'de](../README.md), tüm alan ve hata örnekleri
 { "assignee": "musa", "status": "in_progress" }
 ```
 
-Gönderilmeyen başlık, açıklama ve öncelik korunur. Görevi `GET /tasks/<id>` ile okuyun. `GET /tasks/assignee/musa` atanan kişinin görevlerini listeler. Çalışan tanımlayıcısında case-sensitive tam eşleşme kullanılır.
+Gönderilmeyen başlık, açıklama ve öncelik korunur. Görevi `GET /tasks/<id>` ile okuyun. `GET /tasks/assignee/musa` atanan kişinin görevlerini listeler. Çalışan tanımlayıcısı için case-sensitive tam eşleşme aranır.
 
 Atamayı kaldırmak için `PATCH /tasks/<id>` request body içinde `{"assignee":null}` gönderilir. Çalışanlar ayrı bir kullanıcı tablosunda kayıtlı olmak zorunda değildir.
 
@@ -40,7 +40,7 @@ GET /tasks/search?keyword=endpoint
 GET /tasks?sort=-priority&page=1&limit=10
 ```
 
-Farklı filter'lar birlikte uygulanır. Search başlık ve açıklamayı kapsar; Türkçe harf dönüşümünü gözetir. Pagination kullanıldığında `meta.total` tüm eşleşmeleri, `data` yalnız istenen sayfayı gösterir. Boş eşleşme hata değildir; `200` ve boş liste döner.
+Farklı filter seçenekleri birlikte uygulanır. Search işlemi başlık ve açıklamayı kapsar; Türkçe harf dönüşümünü gözetir. Pagination kullanıldığında `meta.total` tüm eşleşmelerin sayısını, `data` yalnız istenen sayfadaki kayıtları gösterir. Eşleşme bulunmaması hata değildir; `200` ve boş liste döner.
 
 ## 5. Tamamlama ve rapor
 
@@ -54,10 +54,10 @@ Ardından `GET /reports/completed`, `GET /reports/pending` veya `GET /reports/su
 
 ## 6. Silme
 
-Kaldırılacak görev için `DELETE /tasks/<id>` gönderin. `204` response'u body içermez. Aynı kayda sonraki `GET` request'i `404 TASK_NOT_FOUND` döndürmelidir. Silme işlemi kalıcıdır; yalnız kaldırmak istediğiniz kaydın kimliğini kullanın.
+Kaldırılacak görev için `DELETE /tasks/<id>` gönderin. `204` response body içermez. Aynı kayda gönderilen sonraki `GET` request için `404 TASK_NOT_FOUND` beklenir. Silme işlemi kalıcıdır; yalnız kaldırmak istediğiniz kaydın kimliğini kullanın.
 
 ## Veri ve doğrulama
 
-Normal server yeniden başlatmalarında görevler seçilen JSON dosyasından geri okunur. Çalışma verilerini version control kapsamına eklemeyin. Aynı dosyaya bağlı tek server process kullanın. `400` response'unda `error.details` alanını, `500` response'unda server konsolunu inceleyin.
+Server yeniden başlatıldığında görevler seçilen JSON dosyasından okunur. Çalışma verilerini version control kapsamına eklemeyin. Aynı dosyaya bağlı tek server process kullanın. `400` response alındığında `error.details` alanını, `500` response alındığında server konsolunu inceleyin.
 
 Akışı tekrarlanabilir biçimde çalıştırmak ve gerçek Postman görüntülerini kaydetmek için [test planını](test-plani.md) izleyin.

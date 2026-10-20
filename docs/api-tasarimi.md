@@ -1,6 +1,6 @@
 # TaskFlow - API Tasarımı
 
-Bu belge uygulanan HTTP contract için belirlenen tasarım kararlarını açıklar. Yönerge beş CRUD davranışını zorunlu tutar (s.6), ancak temel endpoint'leri, güncelleme için HTTP method seçimini ve response schema'sını belirlemez. Aşağıdaki endpoint'ler ve HTTP status code'lar proje tercihleridir. Ayrıntılı request/response örnekleri [API kılavuzundadır](api.md).
+Bu belge, uygulamanın HTTP contract tasarımına ilişkin kararları açıklar. Yönerge beş CRUD davranışını zorunlu tutar (s.6), ancak temel endpoint'leri, güncelleme için HTTP method seçimini ve response schema'sını belirlemez. Aşağıdaki endpoint'ler ve HTTP status code'lar proje tercihleridir. Ayrıntılı request ve response örnekleri [API kılavuzundadır](api.md).
 
 ## Genel yaklaşım
 
@@ -40,7 +40,7 @@ Güncelleme request body örneği:
 }
 ```
 
-`PATCH` kısmi güncellemedir. `id` ve tarih alanları client'tan alınmaz. Oluşturmada varsayılanlar, güncellemede gönderilmeyen alanların korunması ve atamanın `null` ile kaldırılması [veri modeliyle](veri-modeli.md) aynıdır.
+`PATCH`, kısmi güncelleme için kullanılır. `id` ve tarih alanları client'tan alınmaz. Görev oluştururken kullanılan varsayılan değerler, güncellemede gönderilmeyen alanların korunması ve atamanın `null` ile kaldırılması [veri modelinde](veri-modeli.md) açıklanır.
 
 ## Hata davranışı
 
@@ -64,39 +64,39 @@ Güncelleme request body örneği:
 }
 ```
 
-Field validation hataları bu envelope içine `details` dizisiyle eklenir. Kullanıcıya gösterilen açıklamalar Türkçe; field adları ve makine tarafından işlenen kodlar sabit teknik tanımlayıcılardır. İç dosya yolları ve stack trace'ler response body içine eklenmez.
+Field validation hataları, bu envelope içindeki `details` dizisinde belirtilir. Kullanıcıya gösterilen açıklamalar Türkçedir; field adları ve makine tarafından işlenen kodlar sabit teknik tanımlayıcılardır. İç dosya yolları ve stack trace'ler response body içine eklenmez.
 
 ## Logger
 
-Yönergenin zorunlu tuttuğu üç bilgi HTTP method, endpoint ve timestamp bilgisidir (s.6). Logger bu alanları konsola JSON satırı olarak yazar; bulunamayan route'ları ve hatalı JSON request'lerini de kapsar. JSON parser'dan önce çalışır.
+Yönerge, HTTP method, endpoint ve timestamp bilgilerinin kaydedilmesini zorunlu tutar (s.6). Logger bu alanları konsola JSON satırı olarak yazar; tanımsız route ve hatalı JSON içeren request kayıtlarını da kapsar. JSON parser'dan önce çalışır.
 
 ## İsteğe bağlı liste genişletmeleri
 
-S.8'deki örnek endpoint'ler korunarak aşağıdaki isteğe bağlı davranışlar uygulanmıştır:
+Yönergenin 8. sayfasındaki örnek endpoint'ler korunarak aşağıdaki isteğe bağlı özellikler uygulanmıştır:
 
 | Özellik | Endpoint / örnek | Davranış |
 | --- | --- | --- |
 | Status filter | `GET /tasks?status=completed` | Tam durum eşleşmesi |
 | Priority filter | `GET /tasks?priority=high` | Tam öncelik eşleşmesi |
-| Search | `GET /tasks/search?keyword=backend` | Başlık ve açıklamada Türkçe harf dönüşümünü gözeten, case-insensitive text search |
+| Search | `GET /tasks/search?keyword=backend` | Başlık ve açıklamada Türkçe harf dönüşümünü gözeten case-insensitive arama |
 | Çalışana göre listeleme | `GET /tasks/assignee/musa` | Temizlenmiş `assignee` metniyle case-sensitive tam eşleşme |
 | Pagination | `GET /tasks?page=1&limit=10` | Sayfa numarası 1 tabanlı; `limit` 1-100 arası tam sayı |
 | Sorting | `GET /tasks?sort=createdAt` | İzin verilen alanlara göre sorting |
 
 Ortak kurallar:
 
-- Aynı request içindeki farklı filter'lar kesişim olarak uygulanır. Search ve çalışan endpoint'leri de ortak durum/öncelik/sorting/pagination seçeneklerini kullanır.
-- `keyword` yalnız search endpoint'inde desteklenir; boşlukları temizlendikten sonra 1-200 karakter olmalıdır. Sonuç bulunamazsa `200` ve boş dizi döner.
+- Aynı request içindeki farklı filter seçenekleri kesişim olarak uygulanır. Search ve çalışana göre listeleme endpoint'leri de ortak durum, öncelik, sorting ve pagination seçeneklerini kullanır.
+- `keyword` yalnız search endpoint'inde desteklenir; başındaki ve sonundaki boşluklar temizlendikten sonra 1-200 karakter olmalıdır. Sonuç bulunamazsa `200` ve boş dizi döner.
 - Filtering/search, sorting ve pagination bu sırayla uygulanır.
 - Pagination parametresi yoksa tüm eşleşmeler döner. Parametrelerden biri verilirse eksik `page` için 1, eksik `limit` için 10 kullanılır.
-- Pagination uygulanan listede `meta` alanı `total`, `page`, `limit`, `totalPages` içerir. `total` sayfa diliminden önceki eşleşme sayısıdır. Aralık dışındaki geçerli sayfa `200` ve boş dizi döndürür.
-- `sort` için `createdAt`, `updatedAt`, `title`, `priority` alanları desteklenir. Başına `-` koymak descending sorting anlamına gelir. Varsayılan `createdAt` artan; eşitliklerde her zaman `id` artandır. Öncelik sırası `low`, `medium`, `high`; başlık sırası Türkçe yerel karşılaştırmadır.
-- Geçersiz enum, sorting alanı, sayfa veya limit `400` üretir. Desteklenmeyen veya aynı anahtarı tekrar eden query parametreleri `400` ile reddedilir. Sayfa ve limit başında sıfır, işaret veya kesir içeremez; sayfa güvenli tamsayı aralığında olmalıdır.
+- Pagination uygulanan listede `meta` alanı `total`, `page`, `limit` ve `totalPages` bilgilerini içerir. `total`, pagination uygulanmadan önceki eşleşme sayısıdır. Aralık dışındaki geçerli bir sayfa için `200` ve boş dizi döner.
+- `sort` için `createdAt`, `updatedAt`, `title` ve `priority` alanları desteklenir. Başına `-` eklenmesi azalan sırada sorting uygulanmasını sağlar. Varsayılan sıra `createdAt` değerine göre artandır; eşitliklerde her zaman `id` artan sırada kullanılır. Öncelikler `low`, `medium`, `high` sırasında; başlıklar ise Türkçe yerel kurallarla karşılaştırılır.
+- Geçersiz enum, sorting alanı, sayfa veya limit `400` döndürür. Desteklenmeyen veya aynı anahtarı tekrar eden query parametreleri `400` ile reddedilir. Sayfa ve limit değerleri başında sıfır veya işaret içeremez; kesirli olamaz. Sayfa değeri güvenli tam sayı aralığında olmalıdır.
 - `/tasks/search` ve `/tasks/assignee/:assignee` yolları `/tasks/:id` yolundan önce tanımlanır.
 
 ## İsteğe bağlı raporlar
 
-S.10'da verilen endpoint'ler:
+Yönergenin 10. sayfasında verilen endpoint'ler:
 
 | HTTP method ve endpoint | `data` içeriği |
 | --- | --- |
@@ -104,10 +104,10 @@ S.10'da verilen endpoint'ler:
 | `GET /reports/pending` | `{ "count": 0 }`; yalnız `pending` durumundaki görevler |
 | `GET /reports/summary` | `{ "total": 0, "pending": 0, "inProgress": 0, "completed": 0 }` |
 
-Bekleyen sayısına `in_progress` dahil edilmemesi proje kararıdır; yönerge bu ayrıntıyı tanımlamaz. Genel özette `pending + inProgress + completed = total` eşitliği korunur. Her rapor tek görev görünümü üzerinden hesaplanır. Rapor endpoint'leri query parametresi kabul etmez.
+Bekleyen görev sayısına `in_progress` dahil edilmemesi proje kararıdır; yönerge bu ayrıntıyı tanımlamaz. Genel özette `pending + inProgress + completed = total` eşitliği korunur. Her rapor, görev listesi bir kez okunarak hesaplanır. Rapor endpoint'leri query parametresi kabul etmez.
 
 ## Health check ve tarayıcı erişimi
 
-`GET /health`, `200` ve `{"data":{"status":"ok"}}` döndürür. Bu response yalnız hizmet durumunu bildirir; her çağrıda veri dosyası denetlemez. İsteğe bağlı `CORS_ORIGIN` tek ve tam origin eşleşmesiyle tarayıcı erişimi sağlar; configuration [README'de](../README.md) açıklanır.
+`GET /health`, `200` ve `{"data":{"status":"ok"}}` döndürür. Bu response yalnız hizmet durumunu bildirir; her çağrıda veri dosyası denetlenmez. İsteğe bağlı `CORS_ORIGIN`, tek bir origin ile tam eşleşmeye göre tarayıcı erişimi sağlar; configuration seçenekleri [README'de](../README.md) açıklanır.
 
-Postman collection dosyası ve [test planı](test-plani.md) doğrulama adımlarını içerir. Temel CRUD ve silme sonrası kontrolün [gerçek Postman ekran görüntüleri](test-kanitlari/README.md) eklenmiştir; automated checks sonuçlarının ve manuel Postman akışının kapsamı [sonuçlarda](test-sonuclari.md) ayrı açıklanır.
+Postman collection dosyası ve [test planı](test-plani.md) doğrulama adımlarını içerir. Temel CRUD işlemlerinin ve silme sonrası kontrolün [gerçek Postman ekran görüntüleri](test-kanitlari/README.md) eklenmiştir. Otomatik kontrollerin sonuçları ve manuel Postman akışının kapsamı [test sonuçlarında](test-sonuclari.md) ayrı ayrı açıklanır.
