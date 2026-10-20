@@ -1,10 +1,10 @@
 # TaskFlow - Kullanım Kılavuzu
 
-Kurulum ve yapılandırma [README'de](../README.md), tüm alan ve hata örnekleri [API kılavuzundadır](api.md). Buradaki akış Postman veya başka bir HTTP istemcisiyle uygulanabilir. Temel adres varsayılan olarak `http://127.0.0.1:3000` değeridir.
+Kurulum ve configuration [README'de](../README.md), tüm alan ve hata örnekleri [API kılavuzundadır](api.md). Buradaki akış Postman veya başka bir HTTP client ile uygulanabilir. Temel adres varsayılan olarak `http://127.0.0.1:3000` değeridir.
 
-## 1. Sunucuyu kontrol etme
+## 1. Server'ı kontrol etme
 
-`npm start` sonrasında `GET /health` gönderin. `200` ve `{"data":{"status":"ok"}}` yanıtı beklenir.
+`npm start` sonrasında `GET /health` gönderin. `200` ve `{"data":{"status":"ok"}}` response'u beklenir.
 
 ## 2. Görev oluşturma
 
@@ -18,7 +18,7 @@ Kurulum ve yapılandırma [README'de](../README.md), tüm alan ve hata örnekler
 }
 ```
 
-`201` yanıtındaki `data.id` değerini kaydedin. Durum başlangıçta `pending`, atama `null` olur. Sonraki yollarda `<id>` yerine bu gerçek UUID'yi kullanın. Postman koleksiyonunun oluşturma isteği kimliği `taskId` değişkenine kendisi kaydeder.
+`201` response içindeki `data.id` değerini kaydedin. Durum başlangıçta `pending`, atama `null` olur. Sonraki endpoint'lerde `<id>` yerine bu gerçek UUID'yi kullanın. Postman collection içindeki oluşturma request'i kimliği `taskId` değişkenine kendisi kaydeder.
 
 ## 3. Atama ve ilerleme
 
@@ -28,9 +28,9 @@ Kurulum ve yapılandırma [README'de](../README.md), tüm alan ve hata örnekler
 { "assignee": "musa", "status": "in_progress" }
 ```
 
-Gönderilmeyen başlık, açıklama ve öncelik korunur. Görevi `GET /tasks/<id>` ile okuyun. `GET /tasks/assignee/musa` atanan kişinin görevlerini listeler. Çalışan tanımlayıcısında harf duyarlı tam eşleşme kullanılır.
+Gönderilmeyen başlık, açıklama ve öncelik korunur. Görevi `GET /tasks/<id>` ile okuyun. `GET /tasks/assignee/musa` atanan kişinin görevlerini listeler. Çalışan tanımlayıcısında case-sensitive tam eşleşme kullanılır.
 
-Atamayı kaldırmak için `PATCH /tasks/<id>` gövdesinde `{"assignee":null}` gönderilir. Çalışanlar ayrı bir kullanıcı tablosunda kayıtlı olmak zorunda değildir.
+Atamayı kaldırmak için `PATCH /tasks/<id>` request body içinde `{"assignee":null}` gönderilir. Çalışanlar ayrı bir kullanıcı tablosunda kayıtlı olmak zorunda değildir.
 
 ## 4. Listeyi daraltma
 
@@ -40,11 +40,11 @@ GET /tasks/search?keyword=endpoint
 GET /tasks?sort=-priority&page=1&limit=10
 ```
 
-Farklı filtreler birlikte uygulanır. Arama başlık ve açıklamayı kapsar; Türkçe harf dönüşümünü gözetir. Sayfalama kullanıldığında `meta.total` tüm eşleşmeleri, `data` yalnız istenen sayfayı gösterir. Boş eşleşme hata değildir; `200` ve boş liste döner.
+Farklı filter'lar birlikte uygulanır. Search başlık ve açıklamayı kapsar; Türkçe harf dönüşümünü gözetir. Pagination kullanıldığında `meta.total` tüm eşleşmeleri, `data` yalnız istenen sayfayı gösterir. Boş eşleşme hata değildir; `200` ve boş liste döner.
 
 ## 5. Tamamlama ve rapor
 
-`PATCH /tasks/<id>` gövdesi:
+`PATCH /tasks/<id>` request body örneği:
 
 ```json
 { "status": "completed" }
@@ -54,10 +54,10 @@ Ardından `GET /reports/completed`, `GET /reports/pending` veya `GET /reports/su
 
 ## 6. Silme
 
-Kaldırılacak görev için `DELETE /tasks/<id>` gönderin. `204` yanıtı boş gövdelidir. Aynı kayda sonraki `GET` isteği `404 TASK_NOT_FOUND` döndürmelidir. Silme işlemi kalıcıdır; yalnız kaldırmak istediğiniz kaydın kimliğini kullanın.
+Kaldırılacak görev için `DELETE /tasks/<id>` gönderin. `204` response'u body içermez. Aynı kayda sonraki `GET` request'i `404 TASK_NOT_FOUND` döndürmelidir. Silme işlemi kalıcıdır; yalnız kaldırmak istediğiniz kaydın kimliğini kullanın.
 
 ## Veri ve doğrulama
 
-Normal sunucu yeniden başlatmalarında görevler seçilen JSON dosyasından geri okunur. Çalışma verilerini sürüm kontrolüne eklemeyin. Aynı dosyaya bağlı tek sunucu süreci kullanın. `400` yanıtında `error.details` alanını, `500` yanıtında sunucu konsolunu inceleyin.
+Normal server yeniden başlatmalarında görevler seçilen JSON dosyasından geri okunur. Çalışma verilerini version control kapsamına eklemeyin. Aynı dosyaya bağlı tek server process kullanın. `400` response'unda `error.details` alanını, `500` response'unda server konsolunu inceleyin.
 
 Akışı tekrarlanabilir biçimde çalıştırmak ve gerçek Postman görüntülerini kaydetmek için [test planını](test-plani.md) izleyin.

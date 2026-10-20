@@ -1,19 +1,19 @@
 # TaskFlow - API Kılavuzu
 
-Yerel temel adres: `http://127.0.0.1:3000`. Aşağıdaki kimlik, tarih ve kayıtlar sözleşme örnekleridir; kaydedilmiş test yanıtı değildir. Gerçek `id` değerini oluşturma yanıtından alın.
+Yerel temel adres: `http://127.0.0.1:3000`. Aşağıdaki kimlik, tarih ve kayıtlar sözleşme örnekleridir; kaydedilmiş test response'u değildir. Gerçek `id` değerini oluşturma response'undan alın.
 
 ## Ortak sözleşme
 
-- Gövdeli yazma istekleri `Content-Type: application/json` kullanır; gövde bir JSON nesnesi olmalıdır.
-- Tek kayıt/rapor yanıtı `data`, liste yanıtı `data` ve `meta` alanlarını içerir. Silme `204` ile boş gövde döndürür.
+- Body içeren write request'lerde `Content-Type: application/json` kullanılır; request body bir JSON object olmalıdır.
+- Tek kayıt/rapor response'u `data`, liste response'u `data` ve `meta` alanlarını içerir. Silme `204` ile boş body döndürür.
 - Oluşturmada yalnız `title` zorunludur. `description: ""`, `status: "pending"`, `priority: "medium"`, `assignee: null` varsayılandır.
 - Durumlar: `pending`, `in_progress`, `completed`. Öncelikler: `low`, `medium`, `high`.
-- `title` 1-200, `description` 0-5000, metin `assignee` 1-100 uzunluğunda olmalıdır. Metinlerin dış boşlukları temizlenir. Uzunluk JavaScript metin uzunluğuyla ölçülür.
-- `id`, `createdAt`, `updatedAt` ve bilinmeyen alanlar istemciden kabul edilmez. `PATCH` en az bir düzenlenebilir alan gerektirir; gönderilmeyen alanlar korunur.
+- `title` 1-200, `description` 0-5000, metin `assignee` 1-100 uzunluğunda olmalıdır. Metinlerin dış boşlukları temizlenir. Uzunluk JavaScript string length değeriyle ölçülür.
+- `id`, `createdAt`, `updatedAt` ve bilinmeyen alanlar client'tan kabul edilmez. `PATCH` en az bir düzenlenebilir alan gerektirir; gönderilmeyen alanlar korunur.
 - UUID'ler sürüm/variant biçimine göre doğrulanır. Büyük/küçük harf aynı kimliği belirtir; dönen kimlik küçük harflidir.
-- İstek gövdesi sınırı 100 KB'dır. Hatalar Türkçe mesaj ve sabit makine koduyla döner.
+- Request body sınırı 100 KB'dır. Hatalar Türkçe mesaj ve sabit makine koduyla döner.
 
-## Sağlık kontrolü
+## Health check
 
 ```http
 GET /health
@@ -25,7 +25,7 @@ GET /health
 { "data": { "status": "ok" } }
 ```
 
-Hizmetin yanıt verdiğini bildirir; her çağrıda veri dosyası okunmaz.
+Hizmetin HTTP request'lere cevap verdiğini bildirir; her çağrıda veri dosyası okunmaz.
 
 ## Görev oluşturma
 
@@ -58,7 +58,7 @@ Content-Type: application/json
 }
 ```
 
-Kimlik ve tarihler sunucuda üretilir. Başarı yanıtı dosya yazımı tamamlandıktan sonra döner.
+Kimlik ve tarihler server'da üretilir. Başarılı response dosya yazımı tamamlandıktan sonra döner.
 
 ## Görev listeleme
 
@@ -86,7 +86,7 @@ GET /tasks?status=pending&priority=high&page=1&limit=10&sort=-createdAt
 }
 ```
 
-Sayfalama parametreleri yoksa `meta` yalnız `total` içerir. Boş sonuç `{"data":[],"meta":{"total":0}}` biçimindedir.
+Pagination parametreleri yoksa `meta` yalnız `total` içerir. Boş sonuç `{"data":[],"meta":{"total":0}}` biçimindedir.
 
 ## Görev detayı
 
@@ -151,9 +151,9 @@ Başlık/açıklama ve oluşturma zamanı korunur. Atamayı kaldırmak için `{"
 DELETE /tasks/36b735af-c102-4a93-9d8c-b6e7c0860642
 ```
 
-Başarı yanıtı `204 No Content` ve boş gövdedir. Aynı kimlikle sonraki detay veya silme isteği `404 TASK_NOT_FOUND` döndürür.
+Başarılı response `204 No Content` döndürür ve body içermez. Aynı kimlikle sonraki detay veya silme request'i `404 TASK_NOT_FOUND` döndürür.
 
-## Başlık ve açıklamada arama
+## Başlık ve açıklamada search
 
 ```http
 GET /tasks/search?keyword=backend&status=pending
@@ -179,7 +179,7 @@ GET /tasks/search?keyword=backend&status=pending
 }
 ```
 
-`keyword` zorunludur; dış boşluklar temizlendikten sonra 1-200 karakter olmalıdır. Başlık ve açıklamada alt metin aranır. Dönüşüm `tr-TR` yerel kuralını kullanır: `İ/i` ve `I/ı` çiftleri aynı kabul edilir. Aksan veya noktalama kaldırılmaz. URL içindeki Türkçe harf ve boşlukları URL kodlamasıyla gönderin. Ortak filtre, sıralama ve sayfalama parametreleri burada da kullanılabilir.
+`keyword` zorunludur; dış boşluklar temizlendikten sonra 1-200 karakter olmalıdır. Başlık ve açıklamada alt metin aranır. Dönüşüm `tr-TR` yerel kuralını kullanır: `İ/i` ve `I/ı` çiftleri aynı kabul edilir. Aksan veya noktalama kaldırılmaz. URL içindeki Türkçe harf ve boşlukları URL encoding ile gönderin. Ortak filter, sorting ve pagination parametreleri burada da kullanılabilir.
 
 ## Çalışana göre listeleme
 
@@ -207,11 +207,11 @@ GET /tasks/assignee/musa?priority=high
 }
 ```
 
-Çalışan metni dış boşlukları temizlendikten sonra 1-100 uzunluğunda olmalıdır. Eşleşme tam ve harf duyarlıdır: `musa` ile `Musa` farklıdır. Eşleşmeyen çalışan için boş liste döner; bir kullanıcı kaydı aranmaz. Ortak liste parametreleri desteklenir.
+Çalışan metni dış boşlukları temizlendikten sonra 1-100 uzunluğunda olmalıdır. Eşleşme tam ve case-sensitive olarak yapılır: `musa` ile `Musa` farklıdır. Eşleşmeyen çalışan için boş liste döner; bir kullanıcı kaydı aranmaz. Ortak liste parametreleri desteklenir.
 
 ## Ortak query kuralları
 
-Bu tablo `/tasks`, `/tasks/search` ve `/tasks/assignee/:assignee` liste yolları içindir.
+Bu tablo `/tasks`, `/tasks/search` ve `/tasks/assignee/:assignee` liste endpoint'leri içindir.
 
 | Parametre | Değer | Davranış |
 | --- | --- | --- |
@@ -220,11 +220,11 @@ Bu tablo `/tasks`, `/tasks/search` ve `/tasks/assignee/:assignee` liste yolları
 | `sort` | `createdAt`, `updatedAt`, `title`, `priority` | Varsayılan `createdAt`; başında `-` azalan sıra |
 | `page` | Pozitif güvenli tam sayı | 1 tabanlı; `limit` tek başına verilirse 1 |
 | `limit` | 1-100 arası tam sayı | `page` tek başına verilirse 10 |
-| `keyword` | 1-200 uzunluğunda metin | Yalnız `/tasks/search` için; bu yolda zorunlu |
+| `keyword` | 1-200 uzunluğunda metin | Yalnız `/tasks/search` için; bu endpoint için zorunlu |
 
-Filtreler kesişim olarak uygulanır; ardından sıralama, sonra sayfalama gelir. `total` sayfa diliminden önceki eşleşme sayısıdır. Sonuç yoksa `totalPages: 0`; geçerli fakat aralık dışındaki sayfada boş `data` döner.
+Filter'lar kesişim olarak uygulanır; ardından sorting, sonra pagination gelir. `total` sayfa diliminden önceki eşleşme sayısıdır. Sonuç yoksa `totalPages: 0`; geçerli fakat aralık dışındaki sayfada boş `data` döner.
 
-Öncelik sırası `low < medium < high`; başlık sırası Türkçe yerel karşılaştırmadır. Sıralama değerleri eşitse `id` her zaman artan yönde belirleyicidir. Query anahtarları tek kez kullanılabilir; bilinmeyen anahtar, boş/geçersiz enum veya sort, `page=0`, `page=01`, kesirli/işaretli sayı ve `limit=101` gibi değerler `400 INVALID_QUERY` döndürür. `keyword` normal `/tasks` yolunda desteklenmez.
+Öncelik sırası `low < medium < high`; başlık sırası Türkçe yerel karşılaştırmadır. Sorting değerleri eşitse `id` her zaman artan yönde belirleyicidir. Query anahtarları tek kez kullanılabilir; bilinmeyen anahtar, boş/geçersiz enum veya sort, `page=0`, `page=01`, kesirli/işaretli sayı ve `limit=101` gibi değerler `400 INVALID_QUERY` döndürür. `keyword` normal `/tasks` endpoint'inde desteklenmez.
 
 ## Tamamlanan görev sayısı
 
@@ -266,11 +266,11 @@ GET /reports/summary
 { "data": { "total": 4, "pending": 1, "inProgress": 1, "completed": 2 } }
 ```
 
-Her rapor aynı istek içinde tek bir görev listesi okuyarak hesaplanır. Özette `pending + inProgress + completed = total` olur. Boş depoda tüm sayılar sıfırdır. Rapor yolları query parametresi kabul etmez; örneğin `/reports/summary?status=pending` `400 INVALID_QUERY` döndürür.
+Her rapor aynı request içinde tek bir görev listesi okuyarak hesaplanır. Özette `pending + inProgress + completed = total` olur. Boş repository içinde tüm sayılar sıfırdır. Rapor endpoint'leri query parametresi kabul etmez; örneğin `/reports/summary?status=pending` `400 INVALID_QUERY` döndürür.
 
 ## Hatalar
 
-Ortak hata zarfı:
+Ortak error envelope:
 
 ```json
 {
@@ -281,7 +281,7 @@ Ortak hata zarfı:
 }
 ```
 
-Örneğin `POST /tasks` gövdesi `{"title":"  "}` ise `400` yanıtı:
+Örneğin `POST /tasks` request body `{"title":"  "}` ise `400` response'u:
 
 ```json
 {
@@ -295,19 +295,19 @@ Ortak hata zarfı:
 }
 ```
 
-| HTTP | Kod | Örnek neden |
+| HTTP status code | Error code | Örnek neden |
 | --- | --- | --- |
-| `400` | `INVALID_JSON` | Bozuk JSON veya JSON nesnesi yerine primitive gövde |
-| `400` | `INVALID_BODY` | Gövdenin nesne olmaması veya bozuk sıkıştırılmış içerik |
+| `400` | `INVALID_JSON` | Bozuk JSON veya JSON object yerine primitive body |
+| `400` | `INVALID_BODY` | Body'nin nesne olmaması veya bozuk sıkıştırılmış içerik |
 | `400` | `VALIDATION_ERROR` | Başlık eksik/boş, enum yanlış, alan bilinmiyor veya boş `PATCH` |
 | `400` | `INVALID_ID` | UUID biçimi geçersiz |
 | `400` | `INVALID_QUERY` | Geçersiz, yinelenen veya desteklenmeyen query |
-| `400` | `INVALID_PATH` | URL yolunda geçersiz kodlama |
+| `400` | `INVALID_PATH` | URL path içinde geçersiz encoding |
 | `404` | `TASK_NOT_FOUND` | Görev yok veya silinmiş |
 | `404` | `ROUTE_NOT_FOUND` | Tanımsız endpoint |
 | `413` | `PAYLOAD_TOO_LARGE` | 100 KB sınırı aşılmış |
-| `415` | `UNSUPPORTED_MEDIA_TYPE` | Yazma isteği JSON içerik türü kullanmıyor |
-| `415` | `UNSUPPORTED_ENCODING` | İstek karakter/içerik kodlaması desteklenmiyor |
-| `500` | `INTERNAL_ERROR` | Veri saklama veya beklenmeyen sunucu hatası |
+| `415` | `UNSUPPORTED_MEDIA_TYPE` | Yazma request'i JSON content type kullanmıyor |
+| `415` | `UNSUPPORTED_ENCODING` | Request character/content encoding desteklenmiyor |
+| `500` | `INTERNAL_ERROR` | Veri saklama veya beklenmeyen server hatası |
 
-Dosya yolu, hata yığını ve iç hata ayrıntıları HTTP yanıtına eklenmez. Veri dosyası bozuksa mevcut içerik korunur. Tanı ve yeniden çalıştırma adımları [test planında](test-plani.md), yapılandırma [README'de](../README.md) açıklanır.
+Dosya yolu, stack trace ve iç hata ayrıntıları HTTP response'una eklenmez. Veri dosyası bozuksa mevcut içerik korunur. Tanı ve yeniden çalıştırma adımları [test planında](test-plani.md), configuration [README'de](../README.md) açıklanır.
